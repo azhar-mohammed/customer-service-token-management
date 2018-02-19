@@ -1,31 +1,47 @@
 package com.abcbank.tokenmanage.model;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 /**
  * This class represnts a token which would be provided to a customer
  * @author azharm
  *
  */
+@Entity
 public class Token {
 
-	private Long tokenId;
-	private Long customerId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private int tokenId;
+	@Column
 	private String tokenType;
+	@Enumerated(EnumType.STRING)
+	@Column
 	private ServiceType serviceType;
+	@OneToOne
+	@JoinColumn(name="customerId")
 	private Customer customer;
+	@Column
 	private String comments;
-	private TokenStatus tokenStatus;
-	private Counter counter;
+	@Enumerated(EnumType.STRING)
+	@Column
+	private TokenStatus tokenStatus=TokenStatus.CREATED;
+
 	
 
-	public Long getTokenId() {
+	public int getTokenId() {
 		return tokenId;
 	}
 
-	public void setTokenId(Long tokenId) {
+	public void setTokenId(int tokenId) {
 		this.tokenId = tokenId;
 	}
 
@@ -69,20 +85,5 @@ public class Token {
 		this.customer = customer;
 	}
 
-	public Counter getCounter() {
-		return counter;
-	}
-
-	public void setCounter(Counter counter) {
-		this.counter = counter;
-	}
-
-	public Long getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
-	}
 
 }

@@ -1,21 +1,36 @@
 package com.abcbank.tokenmanage.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * This class represents a customer of a bank  
  * @author azharm
  *
  */
+@Entity
 public class Customer {
 
-	private long customerId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int customerId;
 	
+	@Column
 	private String name;
 
+	@Column
 	private String phoneNumber;
 
+	@Column
 	private String address;
 
+	@Enumerated(EnumType.STRING)
+	@Column
 	private CustomerType customerType;
 
 	
@@ -51,11 +66,11 @@ public class Customer {
 		this.customerType = customerType;
 	}
 
-	public long getCustomerId() {
+	public int getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(long customerId) {
+	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
 	}
 

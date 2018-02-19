@@ -21,7 +21,7 @@ public class TokenController {
 	
 	@PostMapping("/api/token/create")
 	public Token createToken(@RequestBody Token token) {
-		return tokenService.createTokenAndAssignToQueue(token);
+		return tokenService.createTokenAndAssignToCounter(token);
 	}
 	
 	@GetMapping("/api/token/get")
