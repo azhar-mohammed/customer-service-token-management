@@ -14,18 +14,17 @@ import com.abcbank.tokenmanage.model.Token;
 import com.abcbank.tokenmanage.service.TokenService;
 
 @RestController
-@RequestMapping("/api")
 public class TokenController {
 
 	@Autowired
 	TokenService tokenService;
 	
-	@PostMapping("/token/create")
+	@PostMapping("/api/token/create")
 	public Token createToken(@RequestBody Token token) {
 		return tokenService.createTokenAndAssignToQueue(token);
 	}
 	
-	@GetMapping("/token/get")
+	@GetMapping("/api/token/get")
 	public List<Token>  getTokens( ) {
 		return tokenService.getAllTokens();
 	}

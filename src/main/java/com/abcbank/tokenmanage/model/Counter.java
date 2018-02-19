@@ -10,7 +10,7 @@ import java.util.List;
 public class Counter {
 	
 	private Long counterId;
-	private ServiceType counterServiceType;
+	private String counterServiceType;
 	private String counterType;
 	private List<Token> tokens;
 	
@@ -21,10 +21,10 @@ public class Counter {
 	public void setCounterId(Long counterId) {
 		this.counterId = counterId;
 	}
-	public ServiceType getCounterServiceType() {
+	public String getCounterServiceType() {
 		return counterServiceType;
 	}
-	public void setCounterServiceType(ServiceType counterServiceType) {
+	public void setCounterServiceType(String counterServiceType) {
 		this.counterServiceType = counterServiceType;
 	}
 	public String getCounterType() {
