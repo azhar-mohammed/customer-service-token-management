@@ -1,5 +1,7 @@
 package com.abcbank.tokenmanage.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,13 +12,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 /**
  * This class represnts a token which would be provided to a customer
+ * 
  * @author azharm
  *
  */
 @Entity
-public class Token {
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = Token.class)
+public class Token implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -27,15 +34,13 @@ public class Token {
 	@Column
 	private ServiceType serviceType;
 	@OneToOne
-	@JoinColumn(name="customerId")
+	@JoinColumn(name = "customerId")
 	private Customer customer;
 	@Column
 	private String comments;
 	@Enumerated(EnumType.STRING)
 	@Column
-	private TokenStatus tokenStatus=TokenStatus.CREATED;
-
-	
+	private TokenStatus tokenStatus = TokenStatus.CREATED;
 
 	public int getTokenId() {
 		return tokenId;
@@ -85,5 +90,9 @@ public class Token {
 		this.customer = customer;
 	}
 
-
+	@Override
+	public String toString() {
+		return "Token [tokenId=" + tokenId + ", tokenType=" + tokenType + ", serviceType=" + serviceType + ", customer="
+				+ customer.toString() + ", comments=" + comments + ", tokenStatus=" + tokenStatus + "]";
+	}
 }

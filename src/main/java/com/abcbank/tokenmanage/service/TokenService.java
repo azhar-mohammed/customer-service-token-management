@@ -3,6 +3,7 @@ package com.abcbank.tokenmanage.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,12 @@ public class TokenService implements TokenServiceInt {
 
 	@Autowired
 	CustomerRepository customerRepo;
+	
+	@Autowired
+	private AmqpTemplate amqpTemplate;
 
 	@Override
-	public Token createTokenAndAssignToCounter(Token token) {
+	public Token createTokenAndAssignToQueue(Token token) {
 
 		int customerId = token.getCustomer().getCustomerId();
 		if (customerId == 0) {
@@ -33,7 +37,16 @@ public class TokenService implements TokenServiceInt {
 		}
 		token.setTokenStatus(TokenStatus.CREATED);
 		token.setComments("Token created");
-		return tokenRepo.save(token);
+		Token tok = tokenRepo.saveAndFlush(token);
+		if(tok.getTokenType().equalsIgnoreCase("PREMIUM"))
+		{
+		amqpTemplate.convertAndSend("token-exchange","PREMIUM",tok);
+		}
+		else
+		{
+			amqpTemplate.convertAndSend("token-exchange","REGULAR",tok);
+		}
+		return tok;
 	}
 
 	@Override
