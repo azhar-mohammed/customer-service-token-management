@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.abcbank.tokenmanage.model.Customer;
@@ -26,6 +30,20 @@ public class TokenService implements TokenServiceInt {
 	
 	@Autowired
 	private AmqpTemplate amqpTemplate;
+	
+	
+	@Bean
+	public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
+	    return new Jackson2JsonMessageConverter();
+	}
+
+	public AmqpTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
+	    final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+	    rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
+	    return rabbitTemplate;
+	}
+	 
+	
 
 	@Override
 	public Token createTokenAndAssignToQueue(Token token) {
@@ -40,11 +58,11 @@ public class TokenService implements TokenServiceInt {
 		Token tok = tokenRepo.saveAndFlush(token);
 		if(tok.getTokenType().equalsIgnoreCase("PREMIUM"))
 		{
-		amqpTemplate.convertAndSend("token-exchange","PREMIUM",tok);
+		amqpTemplate.convertAndSend("tokens-exchange",token.getServiceType().toString()+"-"+"PREMIUM"+"-key",tok);
 		}
 		else
 		{
-			amqpTemplate.convertAndSend("token-exchange","REGULAR",tok);
+			amqpTemplate.convertAndSend("tokens-exchange",token.getServiceType().toString()+"-"+"REGULAR"+"-key",tok);
 		}
 		return tok;
 	}

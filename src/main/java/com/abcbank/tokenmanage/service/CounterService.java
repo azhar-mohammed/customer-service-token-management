@@ -2,6 +2,9 @@ package com.abcbank.tokenmanage.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -19,6 +22,8 @@ public class CounterService implements CounterServiceInt {
 	@Autowired
 	CounterRepository counterRepo;
 	
+	ExecutorService executor;
+	
 	@Override
 	public List<Counter> getAllCounters() {
 
@@ -27,7 +32,7 @@ public class CounterService implements CounterServiceInt {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() {
-	    List<Counter> counterList = new ArrayList<Counter>();
+	//    List<Counter> counterList = new ArrayList<Counter>();
 	    Counter counter = new Counter();
 	    counter.setCounterServiceType(ServiceType.DEPOSIT);
 	    counter.setCounterType(CustomerType.REGULAR.toString());
@@ -43,7 +48,9 @@ public class CounterService implements CounterServiceInt {
 	    counter.setCounterId(0);
 	    counter.setCounterType(CustomerType.REGULAR.toString());
 	    counterRepo.saveAndFlush(counter);
-	 
+	    List<Counter> counterList=counterRepo.findAll();
+	    executor = Executors.newFixedThreadPool(counterList.size());
 	    
+//	    counterList.stream().filter(counter->counter.getCounterServiceType().)	    
 	}
 }
