@@ -1,4 +1,4 @@
-package com.abcbank.tokenmanage.consumer;
+package com.abcbank.tokenmanage.counter;
 
 import com.abcbank.tokenmanage.model.Token;
 

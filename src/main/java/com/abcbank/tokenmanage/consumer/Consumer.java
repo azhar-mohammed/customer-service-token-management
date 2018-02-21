@@ -10,6 +10,8 @@ import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 
+import com.abcbank.tokenmanage.counter.Receiver;
+
 public class Consumer {
 
     private final ConnectionFactory connectionFactory;
@@ -51,7 +53,9 @@ public class Consumer {
 	public MessageConverter jsonMessageConverter2() {
 		return new Jackson2JsonMessageConverter();
 	}
-	
+	/*
+	 * 
+	 */
     private void initContainer(Receiver receiver) {
         // set up the queue, exchange, binding on the broker
         RabbitAdmin admin = new RabbitAdmin(connectionFactory);

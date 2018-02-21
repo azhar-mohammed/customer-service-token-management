@@ -4,6 +4,9 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.abcbank.tokenmanage.counter.CounterFactory;
+import com.abcbank.tokenmanage.counter.Receiver;
+
 @Component
 public class ConsumerBuilder {
 

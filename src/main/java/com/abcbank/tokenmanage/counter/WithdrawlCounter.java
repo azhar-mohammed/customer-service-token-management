@@ -1,4 +1,4 @@
-package com.abcbank.tokenmanage.consumer;
+package com.abcbank.tokenmanage.counter;
 
 import com.abcbank.tokenmanage.model.Token;
 
@@ -12,6 +12,7 @@ public class WithdrawlCounter implements Receiver {
 		this.counterType = counterType;
 		this.counterName = counterName;
 	}
+	
 	
 	@Override
 	public void receiveMessage(Token token) throws Exception {
