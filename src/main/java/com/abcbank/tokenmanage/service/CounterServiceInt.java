@@ -7,5 +7,6 @@ import com.abcbank.tokenmanage.model.Counter;
 public interface CounterServiceInt {
 
 	public List<Counter> getAllCounters();
+	public Counter     saveCounter(Counter counter);
 
 }

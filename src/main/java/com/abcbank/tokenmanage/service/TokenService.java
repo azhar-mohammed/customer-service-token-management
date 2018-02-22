@@ -49,10 +49,12 @@ public class TokenService implements TokenServiceInt {
 	public Token createTokenAndAssignToQueue(Token token) {
 
 		int customerId = token.getCustomer().getCustomerId();
-		if (customerId == 0) {
+		if (customerId == 0) 
+		{
 			Customer customer = customerRepo.save(token.getCustomer());
 			token.setCustomer(customer);
 		}
+		token.setCustomer(customerRepo.findOne(token.getCustomer().getCustomerId()));
 		token.setTokenStatus(TokenStatus.CREATED);
 		token.setComments("Token created");
 		Token tok = tokenRepo.saveAndFlush(token);

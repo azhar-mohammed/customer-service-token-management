@@ -21,6 +21,8 @@ public class Counter {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int counterId;
+	@Column
+	private String counterName;
 	@Enumerated(EnumType.STRING)
 	@Column
 	private ServiceType counterServiceType;
@@ -35,6 +37,12 @@ public class Counter {
 	}
 	public void setCounterId(int counterId) {
 		this.counterId = counterId;
+	}
+	public String getCounterName() {
+		return counterName;
+	}
+	public void setCounterName(String counterName) {
+		this.counterName = counterName;
 	}
 	public ServiceType getCounterServiceType() {
 		return counterServiceType;

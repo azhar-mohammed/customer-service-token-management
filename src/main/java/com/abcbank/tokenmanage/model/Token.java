@@ -25,6 +25,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = Token.class)
 public class Token implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6097704049487570726L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int tokenId;
