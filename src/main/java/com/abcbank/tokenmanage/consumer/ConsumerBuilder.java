@@ -10,16 +10,37 @@ import com.abcbank.tokenmanage.counter.Receiver;
 @Component
 public class ConsumerBuilder {
 
-    @Autowired
-    ConnectionFactory connectionFactory;
+	@Autowired
+	ConnectionFactory connectionFactory;
 
-      public Consumer build(String counterName, String counterOperation, String counterType) {
-        Receiver receiver=null;
-        CounterFactory factory = new CounterFactory();
-        receiver = factory.createCounterInstance(counterName, counterOperation, counterType);
-       
-        return new Consumer(counterName,counterOperation+"-"+counterType+"-key",counterOperation+"-"+counterType+ "-queue", connectionFactory, receiver);
-    }
-      
-      
+	public Consumer build(String counterName, String counterOperation, String counterType) {
+
+		Receiver receiver = null;
+
+		CounterFactory factory = new CounterFactory();
+
+		receiver = factory.createCounterInstance(counterName, counterOperation, counterType);
+	
+		if(counterOperation.contains("AND"))
+		{
+		String operations[]=counterOperation.split("AND");
+		for(String operation:operations)
+		{
+			operation = operation.trim();
+			System.out.println(operation);
+			 new Consumer(counterName, operation + "-" + counterType + "-key",
+					operation + "-" + counterType + "-queue", connectionFactory, receiver);
+			 
+			 
+		}
+		return null;
+		}
+		else
+		{
+		return new Consumer(counterName, counterOperation + "-" + counterType + "-key",
+				counterOperation + "-" + counterType + "-queue", connectionFactory, receiver);
+		
+		}
+	}
+
 }

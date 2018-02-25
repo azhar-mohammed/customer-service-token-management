@@ -19,7 +19,11 @@ import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.model.Token;
 import com.abcbank.tokenmanage.service.CounterService;
 import com.abcbank.tokenmanage.service.CounterServiceInt;
-
+/**
+ * 
+ * @author azharm
+ *
+ */
 @RestController
 public class CounterController {
 

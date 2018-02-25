@@ -23,6 +23,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = Customer.class)
 public class Customer implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8806592497929560938L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int customerId;

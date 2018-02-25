@@ -1,7 +1,13 @@
 package com.abcbank.tokenmanage.counter;
 
-import com.abcbank.tokenmanage.model.Token;
+import java.util.concurrent.TimeUnit;
 
+import com.abcbank.tokenmanage.model.Token;
+/**
+ * 
+ * @author azharm
+ *
+ */
 public class DepositCounter implements Receiver {
 
 	String counterName;
@@ -18,6 +24,7 @@ public class DepositCounter implements Receiver {
 	public void receiveMessage(Token token) throws Exception {
 		
 		System.out.println("received message "+token+" at counter"+counterName);
+		TimeUnit.MINUTES.sleep(1);
 
 	}
 

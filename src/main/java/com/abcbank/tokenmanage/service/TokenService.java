@@ -54,17 +54,20 @@ public class TokenService implements TokenServiceInt {
 			Customer customer = customerRepo.save(token.getCustomer());
 			token.setCustomer(customer);
 		}
-		token.setCustomer(customerRepo.findOne(token.getCustomer().getCustomerId()));
+		else {
+			token.setCustomer(customerRepo.findOne(token.getCustomer().getCustomerId()));
+		}
+		
 		token.setTokenStatus(TokenStatus.CREATED);
 		token.setComments("Token created");
 		Token tok = tokenRepo.saveAndFlush(token);
 		if(tok.getTokenType().equalsIgnoreCase("PREMIUM"))
 		{
-		amqpTemplate.convertAndSend("tokens-exchange",token.getServiceType().toString()+"-"+"PREMIUM"+"-key",tok);
+		amqpTemplate.convertAndSend("tokens-exchange",token.getRequiredServices()+"-"+"PREMIUM"+"-key",tok);
 		}
 		else
 		{
-			amqpTemplate.convertAndSend("tokens-exchange",token.getServiceType().toString()+"-"+"REGULAR"+"-key",tok);
+			amqpTemplate.convertAndSend("tokens-exchange",token.getRequiredServices().toString()+"-"+"REGULAR"+"-key",tok);
 		}
 		return tok;
 	}
@@ -82,7 +85,7 @@ public class TokenService implements TokenServiceInt {
 		Token tok = new Token();
 		tok.setComments("intial comments");
 		tok.setCustomer(cust);
-		tok.setServiceType(ServiceType.DEPOSIT);
+		tok.setRequiredServices(ServiceType.DEPOSIT.toString());
 		tok.setTokenId(1);
 		tok.setTokenStatus(TokenStatus.CREATED);
 		tok.setTokenType(CustomerType.REGULAR.toString());

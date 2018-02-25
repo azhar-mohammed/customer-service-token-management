@@ -1,5 +1,10 @@
 package com.abcbank.tokenmanage.counter;
 
+/**
+ * 
+ * @author azharm
+ *
+ */
 public class CounterFactory {
 	
 	public Receiver createCounterInstance(String counterName,String counterOperation,String counterType) {
@@ -14,7 +19,9 @@ public class CounterFactory {
 		case "WITHDRAW":
 			receiver = new WithdrawlCounter(counterName,counterType);
 			break;
-				
+			
+		case "DEPOSITANDWITHDRAW":
+			receiver = new DepositAndWithdrawCounter(counterName, counterType);				
 		}
 		return receiver;
 

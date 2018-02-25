@@ -34,9 +34,8 @@ public class Token implements Serializable {
 	private int tokenId;
 	@Column
 	private String tokenType;
-	@Enumerated(EnumType.STRING)
 	@Column
-	private ServiceType serviceType;
+	private String requiredServices;
 	@OneToOne
 	@JoinColumn(name = "customerId")
 	private Customer customer;
@@ -61,7 +60,15 @@ public class Token implements Serializable {
 	public void setTokenType(String tokenType) {
 		this.tokenType = tokenType;
 	}
+   
+	public String getRequiredServices() {
+		return requiredServices;
+	}
 
+	public void setRequiredServices(String requiredServices) {
+		this.requiredServices = requiredServices;
+	}
+	
 	public String getComments() {
 		return comments;
 	}
@@ -78,14 +85,6 @@ public class Token implements Serializable {
 		this.tokenStatus = tokenStatus;
 	}
 
-	public ServiceType getServiceType() {
-		return serviceType;
-	}
-
-	public void setServiceType(ServiceType serviceType) {
-		this.serviceType = serviceType;
-	}
-
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -93,10 +92,7 @@ public class Token implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+	
+	
 
-	@Override
-	public String toString() {
-		return "Token [tokenId=" + tokenId + ", tokenType=" + tokenType + ", serviceType=" + serviceType + ", customer="
-				+ customer.toString() + ", comments=" + comments + ", tokenStatus=" + tokenStatus + "]";
-	}
 }
