@@ -1,5 +1,7 @@
 package com.abcbank.tokenmanage.counter;
 
+import com.abcbank.tokenmanage.service.TokenService;
+
 /**
  * 
  * @author azharm
@@ -7,21 +9,21 @@ package com.abcbank.tokenmanage.counter;
  */
 public class CounterFactory {
 	
-	public Receiver createCounterInstance(String counterName,String counterOperation,String counterType) {
+	public Receiver createCounterInstance(String counterName,String counterOperation,String counterType,TokenService tokenService) {
 
 		Receiver receiver = null;
 
 		switch (counterOperation) {
 		case "DEPOSIT":
-			receiver = new DepositCounter(counterName,counterType);
+			receiver = new DepositCounter(counterName,counterType,tokenService);
 			break;
 
 		case "WITHDRAW":
-			receiver = new WithdrawlCounter(counterName,counterType);
+			receiver = new WithdrawlCounter(counterName,counterType,tokenService);
 			break;
 			
 		case "DEPOSITANDWITHDRAW":
-			receiver = new DepositAndWithdrawCounter(counterName, counterType);				
+			receiver = new DepositAndWithdrawCounter(counterName, counterType,tokenService);				
 		}
 		return receiver;
 

@@ -3,6 +3,7 @@ package com.abcbank.tokenmanage.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -27,48 +28,59 @@ public class TokenService implements TokenServiceInt {
 
 	@Autowired
 	CustomerRepository customerRepo;
-	
+
 	@Autowired
 	private AmqpTemplate amqpTemplate;
-	
-	
+
 	@Bean
 	public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
-	    return new Jackson2JsonMessageConverter();
+		return new Jackson2JsonMessageConverter();
 	}
 
 	public AmqpTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
-	    final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-	    rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
-	    return rabbitTemplate;
+		final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+		rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
+		return rabbitTemplate;
 	}
-	 
-	
 
 	@Override
 	public Token createTokenAndAssignToQueue(Token token) {
 
+		Token tok = null;
 		int customerId = token.getCustomer().getCustomerId();
-		if (customerId == 0) 
-		{
+		if (customerId == 0) {
 			Customer customer = customerRepo.save(token.getCustomer());
 			token.setCustomer(customer);
-		}
-		else {
+		} else {
 			token.setCustomer(customerRepo.findOne(token.getCustomer().getCustomerId()));
 		}
-		
+
 		token.setTokenStatus(TokenStatus.CREATED);
 		token.setComments("Token created");
-		Token tok = tokenRepo.saveAndFlush(token);
-		if(tok.getTokenType().equalsIgnoreCase("PREMIUM"))
-		{
-		amqpTemplate.convertAndSend("tokens-exchange",token.getRequiredServices()+"-"+"PREMIUM"+"-key",tok);
+		String requiredServices[] = token.getRequiredServices().split(",");
+		System.out.println("required services lenght is " + requiredServices.length);
+		int nextStep = token.getNextStep();
+		if (requiredServices.length > nextStep) {
+			if (EnumUtils.isValidEnum(ServiceType.class, requiredServices[nextStep])) {
+				tok = tokenRepo.saveAndFlush(token);
+				if (tok.getTokenType().equalsIgnoreCase("PREMIUM")) {
+					amqpTemplate.convertAndSend("tokens-exchange",
+							requiredServices[nextStep] + "-" + "PREMIUM" + "-key", tok);
+
+				} else {
+					amqpTemplate.convertAndSend("tokens-exchange",
+							requiredServices[nextStep] + "-" + "REGULAR" + "-key", tok);
+				}
+				tok.setNextStep(nextStep + 1);
+			} else {
+				// TODO: throw exception
+				System.out.println("Invalid service specified");
+				return null;
+
+			}
+
 		}
-		else
-		{
-			amqpTemplate.convertAndSend("tokens-exchange",token.getRequiredServices().toString()+"-"+"REGULAR"+"-key",tok);
-		}
+
 		return tok;
 	}
 
@@ -89,10 +101,43 @@ public class TokenService implements TokenServiceInt {
 		tok.setTokenId(1);
 		tok.setTokenStatus(TokenStatus.CREATED);
 		tok.setTokenType(CustomerType.REGULAR.toString());
-		
+
 		tokenList.add(tok);
 		return tokenList;
-		//return tokenRepo.findAll();
+		// return tokenRepo.findAll();
+	}
+
+	@Override
+	public void requeToken(Token tok) {
+		String requiredServices[] = tok.getRequiredServices().split(",");
+		int nextStep = tok.getNextStep();
+		if (requiredServices.length > nextStep) {
+			if (EnumUtils.isValidEnum(ServiceType.class, requiredServices[nextStep])) {
+				if (tok.getTokenType().equalsIgnoreCase("PREMIUM")) {
+					amqpTemplate.convertAndSend("tokens-exchange",
+							requiredServices[nextStep] + "-" + "PREMIUM" + "-key", tok);
+
+				} else {
+					amqpTemplate.convertAndSend("tokens-exchange",
+							requiredServices[nextStep] + "-" + "REGULAR" + "-key", tok);
+				}
+				tok.setNextStep(nextStep + 1);
+			} else {
+				// TODO: throw exception
+				System.out.println("Invalid service specified");
+			}
+
+		}
+
+	}
+
+	@Override
+	public Token updateToken(Token token) {
+
+		Token updatedToken = tokenRepo.saveAndFlush(token);
+		updatedToken.setNextStep(token.getNextStep());
+
+		return updatedToken;
 	}
 
 }

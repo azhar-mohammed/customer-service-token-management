@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.abcbank.tokenmanage.counter.CounterFactory;
 import com.abcbank.tokenmanage.counter.Receiver;
+import com.abcbank.tokenmanage.service.TokenService;
 
 @Component
 public class ConsumerBuilder {
@@ -13,13 +14,13 @@ public class ConsumerBuilder {
 	@Autowired
 	ConnectionFactory connectionFactory;
 
-	public Consumer build(String counterName, String counterOperation, String counterType) {
+	public Consumer build(String counterName, String counterOperation, String counterType,TokenService tokenService) {
 
 		Receiver receiver = null;
 
 		CounterFactory factory = new CounterFactory();
 
-		receiver = factory.createCounterInstance(counterName, counterOperation, counterType);
+		receiver = factory.createCounterInstance(counterName, counterOperation, counterType,tokenService);
 	
 		if(counterOperation.contains("AND"))
 		{

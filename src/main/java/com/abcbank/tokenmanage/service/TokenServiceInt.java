@@ -7,4 +7,6 @@ import com.abcbank.tokenmanage.model.Token;
 public interface TokenServiceInt {
 	public Token createTokenAndAssignToQueue(Token token);
 	public List<Token> getAllTokens();
+	public void requeToken(Token token);
+	public Token updateToken(Token token);
 }

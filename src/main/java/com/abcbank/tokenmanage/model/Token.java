@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -44,6 +45,8 @@ public class Token implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column
 	private TokenStatus tokenStatus = TokenStatus.CREATED;
+	@Transient
+	private int nextStep;
 
 	public int getTokenId() {
 		return tokenId;
@@ -92,7 +95,29 @@ public class Token implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+
+
+	public int getNextStep() {
+		return nextStep;
+	}
+
+	public void setNextStep(int nextStep) {
+		this.nextStep = nextStep;
+	}
 	
+	@Override
+	public String toString() {
+		return "Token [tokenId=" + tokenId + ", tokenType=" + tokenType + ", requiredServices=" + requiredServices
+				+ ", customer=" + customer + ", comments=" + comments + ", tokenStatus=" + tokenStatus + ", nextStep="
+				+ nextStep + "]";
+	}
 	
+	public boolean isFurtherProcessingRequired()
+	{
+		if(requiredServices.length()> nextStep)
+			return true;
+		else
+			return false;
+	}
 
 }

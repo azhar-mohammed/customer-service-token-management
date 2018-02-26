@@ -19,6 +19,7 @@ import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.model.Token;
 import com.abcbank.tokenmanage.service.CounterService;
 import com.abcbank.tokenmanage.service.CounterServiceInt;
+import com.abcbank.tokenmanage.service.TokenService;
 /**
  * 
  * @author azharm
@@ -29,6 +30,9 @@ public class CounterController {
 
 	@Autowired
 	CounterServiceInt counterService;
+	
+	@Autowired
+	TokenService tokenService;
 
 	@Autowired
 	private ConsumerBuilder consumerBuilder;
@@ -44,7 +48,7 @@ public class CounterController {
 	public Counter registerCounter(@RequestBody Counter counter) {
 
 		consumerPool.put(counter.getCounterName(), consumerBuilder.build(counter.getCounterName(),
-				counter.getCounterServiceType().toString(), counter.getCounterType()));
+				counter.getCounterServiceType().toString(), counter.getCounterType(),tokenService));
 		return counterService.saveCounter(counter);
 
 	}

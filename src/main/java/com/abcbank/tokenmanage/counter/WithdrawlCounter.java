@@ -1,16 +1,19 @@
 package com.abcbank.tokenmanage.counter;
 
 import com.abcbank.tokenmanage.model.Token;
+import com.abcbank.tokenmanage.service.TokenService;
 
 public class WithdrawlCounter implements Receiver {
 
 	String counterType;
 	String counterName;
+	TokenService tokenService;
 	
-	public WithdrawlCounter(String counterName,String counterType)
+	public WithdrawlCounter(String counterName,String counterType,TokenService tokenService)
 	{
 		this.counterType = counterType;
 		this.counterName = counterName;
+		this.tokenService = tokenService;
 	}
 	
 	

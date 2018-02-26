@@ -1,5 +1,5 @@
 package com.abcbank.tokenmanage.model;
 
 public enum TokenStatus {
-CREATED,INPROGRESS,COMPLETED
+CREATED,INPROGRESS,COMPLETED,CANCELLED
 }
