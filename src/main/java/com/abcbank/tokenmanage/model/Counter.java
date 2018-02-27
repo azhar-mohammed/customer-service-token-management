@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 
 /**
  * This class represents a counter which serves a particular request in a bank.
+ * 
  * @author azharm
  *
  */
@@ -29,39 +30,46 @@ public class Counter {
 	@Column
 	private String counterType;
 	@Transient
-    private List<Token> tokens;
-	
-	
+	private Token token;
+
 	public int getCounterId() {
 		return counterId;
 	}
+
 	public void setCounterId(int counterId) {
 		this.counterId = counterId;
 	}
+
 	public String getCounterName() {
 		return counterName;
 	}
+
 	public void setCounterName(String counterName) {
 		this.counterName = counterName;
 	}
+
 	public ServiceType getCounterServiceType() {
 		return counterServiceType;
 	}
+
 	public void setCounterServiceType(ServiceType counterServiceType) {
 		this.counterServiceType = counterServiceType;
 	}
+
 	public String getCounterType() {
 		return counterType;
 	}
+
 	public void setCounterType(String counterType) {
 		this.counterType = counterType;
 	}
-	public List<Token> getTokens() {
-		return tokens;
+
+	public Token getToken() {
+		return token;
 	}
-	public void setTokens(List<Token> tokens) {
-		this.tokens = tokens;
+
+	public void setToken(Token token) {
+		this.token = token;
 	}
-	
 
 }

@@ -16,8 +16,10 @@ import com.abcbank.tokenmanage.model.Customer;
 import com.abcbank.tokenmanage.model.CustomerType;
 import com.abcbank.tokenmanage.model.ServiceType;
 import com.abcbank.tokenmanage.model.Token;
+import com.abcbank.tokenmanage.model.TokenCounter;
 import com.abcbank.tokenmanage.model.TokenStatus;
 import com.abcbank.tokenmanage.repository.CustomerRepository;
+import com.abcbank.tokenmanage.repository.TokenCounterRepository;
 import com.abcbank.tokenmanage.repository.TokenRepository;
 
 @Service
@@ -28,6 +30,9 @@ public class TokenService implements TokenServiceInt {
 
 	@Autowired
 	CustomerRepository customerRepo;
+
+	@Autowired
+	TokenCounterRepository tokenCounterRepo;
 
 	@Autowired
 	private AmqpTemplate amqpTemplate;
@@ -56,13 +61,14 @@ public class TokenService implements TokenServiceInt {
 		}
 
 		token.setTokenStatus(TokenStatus.CREATED);
-		token.setComments("Token created");
+		token.setComments("Token created.");
 		String requiredServices[] = token.getRequiredServices().split(",");
 		System.out.println("required services lenght is " + requiredServices.length);
 		int nextStep = token.getNextStep();
 		if (requiredServices.length > nextStep) {
 			if (EnumUtils.isValidEnum(ServiceType.class, requiredServices[nextStep])) {
 				tok = tokenRepo.saveAndFlush(token);
+				tok.setNextStep(nextStep + 1);
 				if (tok.getTokenType().equalsIgnoreCase("PREMIUM")) {
 					amqpTemplate.convertAndSend("tokens-exchange",
 							requiredServices[nextStep] + "-" + "PREMIUM" + "-key", tok);
@@ -71,7 +77,7 @@ public class TokenService implements TokenServiceInt {
 					amqpTemplate.convertAndSend("tokens-exchange",
 							requiredServices[nextStep] + "-" + "REGULAR" + "-key", tok);
 				}
-				tok.setNextStep(nextStep + 1);
+
 			} else {
 				// TODO: throw exception
 				System.out.println("Invalid service specified");
@@ -87,24 +93,22 @@ public class TokenService implements TokenServiceInt {
 	@Override
 	public List<Token> getAllTokens() {
 
-		Customer cust = new Customer();
-		cust.setAddress("santoshnagar");
-		cust.setCustomerId(1);
-		cust.setCustomerName("azhar");
-		cust.setCustomerType(CustomerType.REGULAR);
-		cust.setPhoneNumber("9494940808");
-		List<Token> tokenList = new ArrayList<>();
-		Token tok = new Token();
-		tok.setComments("intial comments");
-		tok.setCustomer(cust);
-		tok.setRequiredServices(ServiceType.DEPOSIT.toString());
-		tok.setTokenId(1);
-		tok.setTokenStatus(TokenStatus.CREATED);
-		tok.setTokenType(CustomerType.REGULAR.toString());
-
-		tokenList.add(tok);
+		/*
+		 * Customer cust = new Customer(); cust.setAddress("santoshnagar");
+		 * cust.setCustomerId(1); cust.setCustomerName("azhar");
+		 * cust.setCustomerType(CustomerType.REGULAR);
+		 * cust.setPhoneNumber("9494940808"); List<Token> tokenList = new ArrayList<>();
+		 * Token tok = new Token(); tok.setComments("intial comments");
+		 * tok.setCustomer(cust);
+		 * tok.setRequiredServices(ServiceType.DEPOSIT.toString()); tok.setTokenId(1);
+		 * tok.setTokenStatus(TokenStatus.CREATED);
+		 * tok.setTokenType(CustomerType.REGULAR.toString());
+		 * 
+		 * tokenList.add(tok); return tokenList;
+		 */
+		List<Token> tokenList = tokenRepo.findAll();
+		// tokenCounterRepo.findAll(example)
 		return tokenList;
-		// return tokenRepo.findAll();
 	}
 
 	@Override
@@ -113,6 +117,7 @@ public class TokenService implements TokenServiceInt {
 		int nextStep = tok.getNextStep();
 		if (requiredServices.length > nextStep) {
 			if (EnumUtils.isValidEnum(ServiceType.class, requiredServices[nextStep])) {
+				tok.setNextStep(nextStep + 1);
 				if (tok.getTokenType().equalsIgnoreCase("PREMIUM")) {
 					amqpTemplate.convertAndSend("tokens-exchange",
 							requiredServices[nextStep] + "-" + "PREMIUM" + "-key", tok);
@@ -121,7 +126,7 @@ public class TokenService implements TokenServiceInt {
 					amqpTemplate.convertAndSend("tokens-exchange",
 							requiredServices[nextStep] + "-" + "REGULAR" + "-key", tok);
 				}
-				tok.setNextStep(nextStep + 1);
+
 			} else {
 				// TODO: throw exception
 				System.out.println("Invalid service specified");
@@ -138,6 +143,28 @@ public class TokenService implements TokenServiceInt {
 		updatedToken.setNextStep(token.getNextStep());
 
 		return updatedToken;
+	}
+
+	@Override
+	public TokenCounter saveTokenCounterMapping(TokenCounter tokCounter) {
+
+		return tokenCounterRepo.saveAndFlush(tokCounter);
+
+	}
+
+	@Override
+	public void deleteTokenCounterMapping(Integer id) {
+
+		tokenCounterRepo.delete(id);
+	}
+
+	@Override
+	public Token updateTokenStatus(Token token) {
+
+		Token foundToken = tokenRepo.findOne(token.getTokenId());
+		foundToken.setTokenStatus(token.getTokenStatus());
+		return tokenRepo.saveAndFlush(foundToken);
+
 	}
 
 }

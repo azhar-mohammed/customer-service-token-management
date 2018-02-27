@@ -29,8 +29,29 @@ public class TokenCounter implements Serializable {
 	private int id;
 	@Column
 	private int tokenId;
+	
 	@Column
-	private int columnId;
+	private int counterId;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getTokenId() {
+		return tokenId;
+	}
+	public void setTokenId(int tokenId) {
+		this.tokenId = tokenId;
+	}
+	public int getCounterId() {
+		return counterId;
+	}
+	public void setCounterId(int counterId) {
+		this.counterId = counterId;
+	}
 	
 
 }

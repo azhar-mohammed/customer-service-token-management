@@ -28,13 +28,13 @@ public class Consumer {
     private String queueName;
 
     private String name;
-
-    public Consumer(String consumerName, String routingKey, String queueName, ConnectionFactory connectionFactory, Receiver receiver) {
+    
+     public Consumer(String consumerName, String routingKey, String queueName, ConnectionFactory connectionFactory,Receiver receiver) {
         this.name = consumerName;
         this.routingKey = routingKey;
         this.queueName = queueName;
         this.connectionFactory = connectionFactory;
-
+      
         initContainer(receiver);
     }
 
