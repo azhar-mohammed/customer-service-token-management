@@ -1,12 +1,11 @@
 package com.abcbank.tokenmanage.counter;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
+import com.abcbank.tokenmanage.dto.TokenDTO;
+import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.model.ServiceType;
-import com.abcbank.tokenmanage.model.Token;
-import com.abcbank.tokenmanage.model.TokenCounter;
+import com.abcbank.tokenmanage.model.TokenCounterMapping;
 import com.abcbank.tokenmanage.model.TokenStatus;
 import com.abcbank.tokenmanage.service.TokenService;
 
@@ -15,16 +14,14 @@ import com.abcbank.tokenmanage.service.TokenService;
  * @author azharm
  *
  */
-public class DepositAndWithdrawCounter implements Receiver {
+public class DepositAndWithdrawCounter extends Counter implements Receiver {
 
-	TokenService tokenService;
-
+	int counterId;
 	String counterName;
 	String counterType;
-	int counterId;
-	private Lock lock= new ReentrantLock();
+	TokenService tokenService;
 
-	public DepositAndWithdrawCounter(String counterName, String counterType, TokenService tokenService, int counterId) {
+	public DepositAndWithdrawCounter(int counterId, String counterName, String counterType, TokenService tokenService) {
 		this.counterName = counterName;
 		this.counterType = counterType;
 		this.tokenService = tokenService;
@@ -32,53 +29,74 @@ public class DepositAndWithdrawCounter implements Receiver {
 	}
 
 	public void performDeposit() {
-	
+
 	}
 
 	public void performWithdrawl()
 
 	{
-		
+
 	}
 
 	@Override
-	public void receiveMessage(Token token) throws Exception {
-		
-		
-		System.out.println("received message " + token + " at counter" + counterName);
-		
+	public void receiveToken(TokenDTO tokenDTO) throws Exception {
 
-		TokenCounter tokenCounter = new TokenCounter();
-		tokenCounter.setCounterId(counterId);
-		tokenCounter.setTokenId(token.getTokenId());
-		TokenCounter savedTokenCounter = tokenService.saveTokenCounterMapping(tokenCounter);
-	
-	
-		token.setTokenStatus(TokenStatus.INPROGRESS);
-		tokenService.updateToken(token);
-		lock.lock();
-		TimeUnit.MINUTES.sleep(2);
-		lock.unlock();
-		
-		String requiredServices[] = token.getRequiredServices().split(",");
+		System.out.println("received message " + tokenDTO + " at counter" + counterName);
 
-		// Add validation and throw exception
-		if (requiredServices[token.getNextStep()-1].equals(ServiceType.DEPOSIT.toString())) {
+		mapTokenToCounter(tokenDTO);
+
+		updateTokenStatusAsInProgress(tokenDTO);
+
+		serveToken(tokenDTO);
+
+		if (tokenDTO.isFurtherProcessingRequired()) {
+			tokenService.queueToken(tokenDTO);
+		} else {
+			updateTokenStatusAsCompleted(tokenDTO);
+		}
+
+	}
+
+	private void serveToken(TokenDTO tokenDTO) throws InterruptedException {
+
+		TimeUnit.MINUTES.sleep(1);
+
+		String[] requiredServices = tokenDTO.getRequiredServices().split(",");
+
+		if (requiredServices[tokenDTO.getNextStep() - 1].equals(ServiceType.DEPOSIT.toString())) {
 			performDeposit();
-			token.setComments(token.getComments()+" Performed Deposit operation.");
-			tokenService.updateToken(token);
-			
-		} else if (requiredServices[token.getNextStep()-1].equals(ServiceType.WITHDRAW.toString())) {
-			performWithdrawl();
-			token.setComments(token.getComments()+" Performed Withdrawl operation.");
-			tokenService.updateToken(token);
-		}
-		
-		tokenService.deleteTokenCounterMapping(savedTokenCounter.getId());
+			tokenDTO.setComments(tokenDTO.getComments() + " Performed Deposit operation.");
+			tokenService.updateToken(tokenDTO);
 
-		if (token.isFurtherProcessingRequired()) {
-			tokenService.requeToken(token);
+		} else if (requiredServices[tokenDTO.getNextStep() - 1].equals(ServiceType.WITHDRAW.toString())) {
+			performWithdrawl();
+			tokenDTO.setComments(tokenDTO.getComments() + " Performed Withdrawl operation.");
+			tokenService.updateToken(tokenDTO);
 		}
+
+	}
+
+	private void updateTokenStatusAsInProgress(TokenDTO tokenDTO) {
+
+		tokenDTO.setTokenStatus(TokenStatus.INPROGRESS);
+		tokenService.updateToken(tokenDTO);
+
+	}
+
+	private void updateTokenStatusAsCompleted(TokenDTO tokenDTO) {
+
+		tokenDTO.setTokenStatus(TokenStatus.COMPLETED);
+		tokenService.updateToken(tokenDTO);
+
+	}
+
+	private TokenCounterMapping mapTokenToCounter(TokenDTO tokenDTO) {
+
+		TokenCounterMapping tokenCounter = new TokenCounterMapping();
+		tokenCounter.setCounterId(counterId);
+		tokenCounter.setTokenId(tokenDTO.getTokenId());
+
+		return tokenService.saveTokenCounterMapping(tokenCounter);
 
 	}
 

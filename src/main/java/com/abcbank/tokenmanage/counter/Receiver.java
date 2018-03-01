@@ -1,9 +1,10 @@
 package com.abcbank.tokenmanage.counter;
 
-import com.abcbank.tokenmanage.model.Token;
+import com.abcbank.tokenmanage.dto.TokenDTO;
+
 
 public interface Receiver {
 
-    public void receiveMessage(Token token) throws Exception;
+    public void receiveToken(TokenDTO tokenDTO) throws Exception;
     
 }

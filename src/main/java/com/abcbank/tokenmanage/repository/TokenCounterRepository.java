@@ -7,15 +7,15 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.abcbank.tokenmanage.model.TokenCounter;
+import com.abcbank.tokenmanage.model.TokenCounterMapping;
 
 /**
  * @author azharm
  *
  */
-public interface TokenCounterRepository extends JpaRepository<TokenCounter,Integer> {
+public interface TokenCounterRepository extends JpaRepository<TokenCounterMapping,Integer> {
 
-	TokenCounter findByCounterId(int counterId);
+	List<TokenCounterMapping> findAllByCounterId(int counterId);
 
 	
 }

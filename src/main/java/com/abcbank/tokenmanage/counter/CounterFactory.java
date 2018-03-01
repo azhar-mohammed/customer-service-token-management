@@ -1,7 +1,8 @@
 package com.abcbank.tokenmanage.counter;
 
+import com.abcbank.tokenmanage.dto.CounterDTO;
 import com.abcbank.tokenmanage.model.Counter;
-import com.abcbank.tokenmanage.service.TokenService;
+import com.abcbank.tokenmanage.service.TokenServiceImplementation;
 
 /**
  * 
@@ -9,34 +10,33 @@ import com.abcbank.tokenmanage.service.TokenService;
  *
  */
 public class CounterFactory {
-	
-	public Receiver createCounterInstance(Counter counter,TokenService tokenService) {
+
+	public Receiver createCounterInstance(CounterDTO counterDTO, TokenServiceImplementation tokenService) {
 
 		Receiver receiver = null;
 
+		String counterName = counterDTO.getCounterName();
 
-		String counterName = counter.getCounterName();
+		String counterOperation = counterDTO.getCounterService();
 
-		String counterOperation = counter.getCounterServiceType().toString();
+		String counterType = counterDTO.getCounterType();
 
-		String counterType = counter.getCounterType();
-		
-		int counterId = counter.getCounterId();
-		
+		int counterId = counterDTO.getCounterId();
+
 		switch (counterOperation) {
+
 		case "DEPOSIT":
-			receiver = new DepositCounter(counterName,counterType,tokenService,counterId);
+			receiver = new DepositCounter(counterId,counterName, counterType, tokenService );
 			break;
 
 		case "WITHDRAW":
-			receiver = new WithdrawlCounter(counterName,counterType,tokenService,counterId);
+			receiver = new WithdrawlCounter(counterId,counterName, counterType, tokenService);
 			break;
-			
-		case "DEPOSITANDWITHDRAW":
-			receiver = new DepositAndWithdrawCounter(counterName, counterType,tokenService,counterId);	
-			
-		case "WITHDRAWANDDEPOSIT":
-			receiver = new DepositAndWithdrawCounter(counterName, counterType,tokenService,counterId);	
+
+		case "DEPOSIT,WITHDRAW":
+		case "WITHDRAW,DEPOSIT":
+			receiver = new DepositAndWithdrawCounter(counterId,counterName, counterType, tokenService);
+			break;
 		}
 		return receiver;
 

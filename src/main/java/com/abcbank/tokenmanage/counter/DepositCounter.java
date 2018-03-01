@@ -1,64 +1,87 @@
 package com.abcbank.tokenmanage.counter;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.abcbank.tokenmanage.model.Token;
-import com.abcbank.tokenmanage.model.TokenCounter;
+import com.abcbank.tokenmanage.dto.TokenDTO;
+import com.abcbank.tokenmanage.model.TokenCounterMapping;
 import com.abcbank.tokenmanage.model.TokenStatus;
 import com.abcbank.tokenmanage.service.TokenService;
+
 /**
  * 
  * @author azharm
  *
  */
 public class DepositCounter implements Receiver {
-	
-	TokenService tokenService;
-	
+
+	int counterId;
 	String counterName;
 	String counterType;
-     int counterId;
-     private Lock lock= new ReentrantLock();
-	
-	
-	public DepositCounter(String counterName,String counterType,TokenService tokenService,int counterId)
-	{
+	TokenService tokenService;
+
+	public DepositCounter(int counterId, String counterName, String counterType, TokenService tokenService) {
+		this.counterId = counterId;
 		this.counterType = counterType;
 		this.counterName = counterName;
 		this.tokenService = tokenService;
-		this.counterId = counterId;
+
 	}
-	
+
 	@Override
-	public void receiveMessage(Token token) throws Exception {
-		
-		System.out.println("received message "+token+" at counter"+counterName);
-		
-		TokenCounter tokenCounter = new TokenCounter();
-		tokenCounter.setCounterId(counterId);
-		tokenCounter.setTokenId(token.getTokenId());
-		TokenCounter savedTokenCounter = tokenService.saveTokenCounterMapping(tokenCounter);
-		
-		token.setTokenStatus(TokenStatus.INPROGRESS);
-		tokenService.updateToken(token);
-		
-		lock.lock();
-		TimeUnit.MILLISECONDS.sleep(6000);
-		lock.unlock();
-		
-		token.setComments(token.getComments()+" Performed Deposit operation.");
-		tokenService.updateToken(token);
-		
-		tokenService.deleteTokenCounterMapping(savedTokenCounter.getId());
-		
-		if(token.isFurtherProcessingRequired())
-		{
-			tokenService.requeToken(token);
+	public void receiveToken(TokenDTO tokenDTO) throws Exception {
+
+		System.out.println("received message " + tokenDTO + " at counter" + counterName);
+
+		mapTokenToCounter(tokenDTO);
+
+		updateTokenStatusAsInProgress(tokenDTO);
+
+		serveToken();
+
+		updateTokenComments(tokenDTO);
+
+		if (tokenDTO.isFurtherProcessingRequired()) {
+			tokenService.queueToken(tokenDTO);
 		}
+		else {
+			updateTokenStatusAsCompleted(tokenDTO);
+		}
+
+	}
+
+	private void serveToken() throws InterruptedException {
+
+		TimeUnit.MILLISECONDS.sleep(6000);
+
+	}
+
+	private void updateTokenComments(TokenDTO tokenDTO) {
+
+		tokenDTO.setComments(tokenDTO.getComments() + " Performed Deposit operation.");
+		tokenService.updateToken(tokenDTO);
+
+	}
+
+	private void updateTokenStatusAsInProgress(TokenDTO tokenDTO) {
+
+		tokenDTO.setTokenStatus(TokenStatus.INPROGRESS);
+		tokenService.updateToken(tokenDTO);
+
+	}
+
+	private void updateTokenStatusAsCompleted(TokenDTO tokenDTO) {
+
+		tokenDTO.setTokenStatus(TokenStatus.COMPLETED);
+		tokenService.updateToken(tokenDTO);
+
+	}
+
+	private TokenCounterMapping mapTokenToCounter(TokenDTO tokenDTO) {
+
+		TokenCounterMapping tokenCounter = new TokenCounterMapping();
+		tokenCounter.setCounterId(counterId);
+		tokenCounter.setTokenId(tokenDTO.getTokenId());
+
+		return tokenService.saveTokenCounterMapping(tokenCounter);
 
 	}
 

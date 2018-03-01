@@ -1,11 +1,8 @@
 package com.abcbank.tokenmanage.model;
 
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,13 +21,11 @@ public class Counter {
 	private int counterId;
 	@Column
 	private String counterName;
-	@Enumerated(EnumType.STRING)
 	@Column
-	private ServiceType counterServiceType;
+	private String counterService;
 	@Column
 	private String counterType;
-	@Transient
-	private Token token;
+
 
 	public int getCounterId() {
 		return counterId;
@@ -48,12 +43,12 @@ public class Counter {
 		this.counterName = counterName;
 	}
 
-	public ServiceType getCounterServiceType() {
-		return counterServiceType;
+	public String getCounterService() {
+		return counterService;
 	}
 
-	public void setCounterServiceType(ServiceType counterServiceType) {
-		this.counterServiceType = counterServiceType;
+	public void setCounterService(String counterService) {
+		this.counterService = counterService;
 	}
 
 	public String getCounterType() {
@@ -64,12 +59,5 @@ public class Counter {
 		this.counterType = counterType;
 	}
 
-	public Token getToken() {
-		return token;
-	}
-
-	public void setToken(Token token) {
-		this.token = token;
-	}
 
 }

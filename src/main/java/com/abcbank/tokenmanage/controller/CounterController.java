@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.abcbank.tokenmanage.consumer.Consumer;
 import com.abcbank.tokenmanage.consumer.ConsumerBuilder;
+import com.abcbank.tokenmanage.dto.CounterDTO;
 import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.model.Token;
 import com.abcbank.tokenmanage.service.CounterService;
-import com.abcbank.tokenmanage.service.CounterServiceInt;
-import com.abcbank.tokenmanage.service.TokenService;
+import com.abcbank.tokenmanage.service.CounterServiceImplementation;
+import com.abcbank.tokenmanage.service.TokenServiceImplementation;
 
 /**
  * 
@@ -31,33 +32,29 @@ import com.abcbank.tokenmanage.service.TokenService;
 public class CounterController {
 
 	@Autowired
-	CounterServiceInt counterService;
+	CounterService counterService;
 
 	@Autowired
-	TokenService tokenService;
+	TokenServiceImplementation tokenService;
 
 	@Autowired
 	private ConsumerBuilder consumerBuilder;
 
-	private HashSet<String> consumerPoolSet = new HashSet<String>();
 
 	@GetMapping("/api/counter")
-	public List<Counter> getCounters() {
+	public List<CounterDTO> getCounters() {
 		return counterService.getAllCounters();
 	}
 
 	@PostMapping("api/counter")
-	public String registerCounter(@RequestBody Counter counter) {
-		if(consumerPoolSet.add(counter.getCounterName())) 
-		{
-			Counter savedCounter = counterService.saveCounter(counter);
-		   consumerBuilder.build(savedCounter,tokenService);
-		    return "Successfully registered counter with counter name"+counter.getCounterName();
-		}
-		else
-		{
-			return "Counter "+counter.getCounterName()+" is already present ";
-		}
+	public String registerCounter(@RequestBody CounterDTO counterDTO) {
+
+		CounterDTO savedCounterDTO = counterService.saveCounter(counterDTO);
+		
+		consumerBuilder.build(savedCounterDTO,tokenService);
+		
+		return "Successfully registered counter with  name "+counterDTO.getCounterName();
+		
 		
 
 	}

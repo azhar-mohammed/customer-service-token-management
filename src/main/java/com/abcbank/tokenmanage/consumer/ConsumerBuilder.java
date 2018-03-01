@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import com.abcbank.tokenmanage.counter.CounterFactory;
 import com.abcbank.tokenmanage.counter.Receiver;
-import com.abcbank.tokenmanage.model.Counter;
-import com.abcbank.tokenmanage.service.TokenService;
+import com.abcbank.tokenmanage.dto.CounterDTO;
+import com.abcbank.tokenmanage.service.TokenServiceImplementation;
 
 @Component
 public class ConsumerBuilder {
@@ -15,33 +15,33 @@ public class ConsumerBuilder {
 	@Autowired
 	ConnectionFactory connectionFactory;
 
-	public void build(Counter counter, TokenService tokenService) {
+	public void build(CounterDTO counterDTO, TokenServiceImplementation tokenService) {
 
-		Receiver receiver = null;
+		Receiver receivingCounter = null;
 
 		CounterFactory factory = new CounterFactory();
 
-		String counterName = counter.getCounterName();
+		String counterName = counterDTO.getCounterName();
 
-		String counterOperation = counter.getCounterServiceType().toString();
+		String counterOperation = counterDTO.getCounterService();
 
-		String counterType = counter.getCounterType();
+		String counterType = counterDTO.getCounterType();
 
-		receiver = factory.createCounterInstance(counter, tokenService);
+		receivingCounter = factory.createCounterInstance(counterDTO, tokenService);
 
-		if (counterOperation.contains("AND")) {
-			String operations[] = counterOperation.split("AND");
+		if (counterOperation.contains(",")) {
+			String[] operations = counterOperation.split(",");
 			for (String operation : operations) {
 				operation = operation.trim();
 				System.out.println(operation);
 				new Consumer(counterName, operation + "-" + counterType + "-key",
-						operation + "-" + counterType + "-queue", connectionFactory, receiver);
+						operation + "-" + counterType + "-queue", connectionFactory, receivingCounter);
 			}
-			return;
+
 		} else {
 			new Consumer(counterName, counterOperation + "-" + counterType + "-key",
-					counterOperation + "-" + counterType + "-queue", connectionFactory, receiver);
-			return;
+					counterOperation + "-" + counterType + "-queue", connectionFactory, receivingCounter);
+
 		}
 	}
 

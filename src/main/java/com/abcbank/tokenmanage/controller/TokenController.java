@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.abcbank.tokenmanage.dto.TokenDTO;
 import com.abcbank.tokenmanage.model.Token;
-import com.abcbank.tokenmanage.service.TokenService;
+import com.abcbank.tokenmanage.service.TokenServiceImplementation;
 /**
  * 
  * @author azharm
@@ -19,15 +20,15 @@ import com.abcbank.tokenmanage.service.TokenService;
 public class TokenController {
 
 	@Autowired
-	TokenService tokenService;
+	TokenServiceImplementation tokenService;
 	
 	@PostMapping("/api/token")
-	public Token createToken(@RequestBody Token token) {
-		return tokenService.createTokenAndAssignToQueue(token);
+	public TokenDTO createToken(@RequestBody TokenDTO tokenDTO) {
+		return tokenService.createTokenAndAssignToQueue(tokenDTO);
 	}
 	
 	@GetMapping("/api/token")
-	public List<Token>  getTokens( ) {
+	public List<TokenDTO>  getTokens( ) {
 		return tokenService.getAllTokens();
 	}
 	

@@ -17,8 +17,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  *
  */
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = TokenCounter.class)
-public class TokenCounter implements Serializable {
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = TokenCounterMapping.class)
+public class TokenCounterMapping implements Serializable {
 
 	/**
 	 * 

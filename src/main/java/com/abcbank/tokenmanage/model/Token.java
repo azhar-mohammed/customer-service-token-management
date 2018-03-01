@@ -45,8 +45,8 @@ public class Token implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column
 	private TokenStatus tokenStatus = TokenStatus.CREATED;
-	@Transient
-	private int nextStep;
+	
+	
 
 	public int getTokenId() {
 		return tokenId;
@@ -96,28 +96,23 @@ public class Token implements Serializable {
 		this.customer = customer;
 	}
 
-
-	public int getNextStep() {
-		return nextStep;
-	}
-
-	public void setNextStep(int nextStep) {
-		this.nextStep = nextStep;
-	}
-	
 	@Override
 	public String toString() {
 		return "Token [tokenId=" + tokenId + ", tokenType=" + tokenType + ", requiredServices=" + requiredServices
-				+ ", customer=" + customer + ", comments=" + comments + ", tokenStatus=" + tokenStatus + ", nextStep="
-				+ nextStep + "]";
+				+ ", customer=" + customer + ", comments=" + comments + ", tokenStatus=" + tokenStatus + "]";
 	}
+
+
 	
+	
+	
+	/*
 	public boolean isFurtherProcessingRequired()
 	{
 		if(requiredServices.length()> nextStep)
 			return true;
 		else
 			return false;
-	}
+	}*/
 
 }
