@@ -89,7 +89,7 @@ public class TokenServiceImplementation implements TokenService {
 		String[] requiredServices = tokenDTO.getRequiredServices().split(",");
 		for (String service : requiredServices) {
 			if (!EnumUtils.isValidEnum(ServiceType.class, service)) {
-				throw new TokenException("Token creation failed invalid service " + "service" + " provided");
+				throw new TokenException("Token creation failed invalid service " +service + " provided");
 			}
 		}
 	}

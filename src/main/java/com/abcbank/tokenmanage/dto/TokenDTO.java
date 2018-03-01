@@ -20,8 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author azharm
  *
  */
-@Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = TokenDTO.class)
+
 public class TokenDTO implements Serializable {
 
 	/**
@@ -39,8 +38,10 @@ public class TokenDTO implements Serializable {
 
 	private Customer customer;
 
+	@JsonInclude(Include.NON_NULL)
 	private String comments;
 
+	@JsonIgnore
 	private TokenStatus tokenStatus;
 	
 	@JsonIgnore

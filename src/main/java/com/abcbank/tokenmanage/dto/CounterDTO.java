@@ -2,7 +2,6 @@ package com.abcbank.tokenmanage.dto;
 
 import java.util.List;
 
-import com.abcbank.tokenmanage.model.Token;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -12,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author azharm
  *
  */
+
 public class CounterDTO {
 
 	@JsonIgnore

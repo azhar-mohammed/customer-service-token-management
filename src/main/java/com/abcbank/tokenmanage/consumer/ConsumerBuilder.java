@@ -29,20 +29,14 @@ public class ConsumerBuilder {
 
 		receivingCounter = factory.createCounterInstance(counterDTO, tokenService);
 
-		if (counterOperation.contains(",")) {
-			String[] operations = counterOperation.split(",");
-			for (String operation : operations) {
-				operation = operation.trim();
-				System.out.println(operation);
-				new Consumer(counterName, operation + "-" + counterType + "-key",
-						operation + "-" + counterType + "-queue", connectionFactory, receivingCounter);
-			}
-
-		} else {
-			new Consumer(counterName, counterOperation + "-" + counterType + "-key",
-					counterOperation + "-" + counterType + "-queue", connectionFactory, receivingCounter);
-
+		String[] operations = counterOperation.split(",");
+		for (String operation : operations) {
+			operation = operation.trim();
+			System.out.println(operation);
+			new Consumer(counterName, operation + "-" + counterType + "-key", operation + "-" + counterType + "-queue",
+					connectionFactory, receivingCounter);
 		}
+
 	}
 
 }

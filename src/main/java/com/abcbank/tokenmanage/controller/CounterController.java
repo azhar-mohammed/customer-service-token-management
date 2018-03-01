@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,19 +44,19 @@ public class CounterController {
 
 
 	@GetMapping("/api/counter")
-	public List<CounterDTO> getCounters() {
-		return counterService.getAllCounters();
+	public ResponseEntity<List<CounterDTO>> getCounters() {
+		
+		return new ResponseEntity<List<CounterDTO>>(counterService.getAllCounters(),HttpStatus.OK);
 	}
 
 	@PostMapping("api/counter")
-	public String registerCounter(@RequestBody CounterDTO counterDTO) {
+	public ResponseEntity<CounterDTO> registerCounter(@RequestBody CounterDTO counterDTO) {
 
 		CounterDTO savedCounterDTO = counterService.saveCounter(counterDTO);
 		
 		consumerBuilder.build(savedCounterDTO,tokenService);
-		
-		return "Successfully registered counter with  name "+counterDTO.getCounterName();
-		
+				
+		return new ResponseEntity<CounterDTO>(savedCounterDTO,HttpStatus.OK);
 		
 
 	}

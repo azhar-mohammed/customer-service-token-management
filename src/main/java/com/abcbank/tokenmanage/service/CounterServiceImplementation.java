@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Service;
 import com.abcbank.tokenmanage.dto.CounterDTO;
 import com.abcbank.tokenmanage.dto.TokenDTO;
 import com.abcbank.tokenmanage.exception.CounterException;
+import com.abcbank.tokenmanage.exception.TokenException;
 import com.abcbank.tokenmanage.model.Counter;
+import com.abcbank.tokenmanage.model.CustomerType;
+import com.abcbank.tokenmanage.model.ServiceType;
 import com.abcbank.tokenmanage.model.TokenCounterMapping;
 import com.abcbank.tokenmanage.repository.CounterRepository;
 import com.abcbank.tokenmanage.repository.TokenCounterRepository;
@@ -33,6 +37,72 @@ public class CounterServiceImplementation implements CounterService {
 
 	@Autowired
 	ModelMapper modelMapper;
+
+	private Counter convertToEntity(CounterDTO counterDTO) {
+		return modelMapper.map(counterDTO, Counter.class);
+
+	}
+
+	private CounterDTO convertToDTO(Counter counter) {
+		return modelMapper.map(counter, CounterDTO.class);
+	}
+
+	@Override
+	public CounterDTO saveCounter(CounterDTO counterDTO) {
+		validateCounterDTO(counterDTO);
+		Counter counter = convertToEntity(counterDTO);
+		Counter savedCounter = counterRepo.saveAndFlush(counter);
+		return convertToDTO(savedCounter);
+	}
+
+	private void validateCounterDTO(CounterDTO counterDTO) {
+
+		fieldsAreNotNullValidation(counterDTO);
+		validateRequiredServices(counterDTO);
+		validateCounterType(counterDTO);
+
+	}
+
+	private void validateRequiredServices(CounterDTO counterDTO) {
+
+		String[] requiredServices = counterDTO.getCounterService().split(",");
+		for (String service : requiredServices) {
+			if (!EnumUtils.isValidEnum(ServiceType.class, service)) {
+				throw new TokenException("Counter creation failed invalid service " + service + " provided");
+			}
+		}
+	}
+
+	private void fieldsAreNotNullValidation(CounterDTO counterDTO) {
+		if (counterDTO.getCounterName() == null) {
+			throw new CounterException("counter creation failed counter name is null");
+		} else if (counterDTO.getCounterService() == null) {
+			throw new CounterException("counter creation failed counter service is null");
+		} else if (counterDTO.getCounterType() == null) {
+			throw new CounterException("counter creation failed counter type is null");
+		} else if (counterNameExistsCheck(counterDTO)) {
+			throw new CounterException(
+					"A counter is already present with the same name please provide a different name");
+		}
+	}
+
+	private void validateCounterType(CounterDTO counterDTO) {
+
+		if (!EnumUtils.isValidEnum(CustomerType.class, counterDTO.getCounterType()))
+			throw new CounterException(
+					"Counter creation failed invalid counter type " + counterDTO.getCounterType() + " specified");
+
+	}
+
+	private boolean counterNameExistsCheck(CounterDTO counterDTO) {
+
+		if (counterRepo.findCounterByCounterName(counterDTO.getCounterName()) == null) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
 
 	@Override
 	public List<CounterDTO> getAllCounters() {
@@ -55,7 +125,7 @@ public class CounterServiceImplementation implements CounterService {
 
 	private List<TokenDTO> getListOfTokens(List<TokenCounterMapping> tokenCounterMapList) {
 
-		List<TokenDTO> tokenDTOList = new ArrayList<TokenDTO>();
+		List<TokenDTO> tokenDTOList = new ArrayList<>();
 
 		if (!tokenCounterMapList.isEmpty()) {
 			for (TokenCounterMapping tokenCounterMapping : tokenCounterMapList) {
@@ -70,48 +140,6 @@ public class CounterServiceImplementation implements CounterService {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() {
-
-	}
-
-	private Counter convertToEntity(CounterDTO counterDTO) {
-		return modelMapper.map(counterDTO, Counter.class);
-
-	}
-
-	private CounterDTO convertToDTO(Counter counter) {
-		return modelMapper.map(counter, CounterDTO.class);
-	}
-
-	@Override
-	public CounterDTO saveCounter(CounterDTO counterDTO) {
-		validateCounterDTO(counterDTO);
-		Counter counter = convertToEntity(counterDTO);
-		Counter savedCounter = counterRepo.saveAndFlush(counter);
-		return convertToDTO(savedCounter);
-	}
-
-	private void validateCounterDTO(CounterDTO counterDTO) {
-
-		if (counterDTO.getCounterName() == null) {
-			throw new CounterException("counter creation failed counter name is null");
-		} else if (counterDTO.getCounterService() == null) {
-			throw new CounterException("counter creation failed counter service is null");
-		} else if (counterDTO.getCounterType() == null) {
-			throw new CounterException("counter creation failed counter type is null");
-		} else if (counterNameExistsCheck(counterDTO)) {
-			throw new CounterException(
-					"A counter is already present with the same name please provide a different name");
-		}
-
-	}
-
-	private boolean counterNameExistsCheck(CounterDTO counterDTO) {
-
-		if (counterRepo.findCounterByCounterName(counterDTO.getCounterName()) == null) {
-			return false;
-		} else {
-			return true;
-		}
 
 	}
 }

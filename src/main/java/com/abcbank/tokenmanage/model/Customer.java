@@ -11,7 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * This class represents a customer of a bank
@@ -33,12 +35,15 @@ public class Customer implements Serializable {
 	private int customerId;
 
 	@Column
+	@JsonInclude(Include.NON_NULL)
 	private String name;
 
 	@Column
+	@JsonInclude(Include.NON_NULL)
 	private String phoneNumber;
 
 	@Column
+	@JsonInclude(Include.NON_NULL)
 	private String address;
 
 	@Enumerated(EnumType.STRING)

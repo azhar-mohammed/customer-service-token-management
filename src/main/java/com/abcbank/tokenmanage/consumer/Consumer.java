@@ -69,7 +69,7 @@ public class Consumer {
         SimpleMessageListenerContainer container =
                 new SimpleMessageListenerContainer(connectionFactory);
 
-        MessageListenerAdapter adapter = new MessageListenerAdapter(receiver, "receiveMessage");
+        MessageListenerAdapter adapter = new MessageListenerAdapter(receiver, "receiveToken");
         adapter.setMessageConverter(jsonMessageConverter2());
         container.setMessageListener(adapter);
         container.setQueueNames(queueName);
