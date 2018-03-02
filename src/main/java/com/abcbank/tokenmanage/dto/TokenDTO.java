@@ -4,16 +4,12 @@
 package com.abcbank.tokenmanage.dto;
 
 import java.io.Serializable;
-
-import javax.persistence.Entity;
+import java.util.List;
 
 import com.abcbank.tokenmanage.model.Customer;
-import com.abcbank.tokenmanage.model.Token;
 import com.abcbank.tokenmanage.model.TokenStatus;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
@@ -28,23 +24,20 @@ public class TokenDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = -1230006601776461668L;
 
-	
-	@JsonIgnore
 	private int tokenId;
 
 	private String tokenType;
 
-	private String requiredServices;
+	@JsonInclude(Include.NON_DEFAULT)
+	private List<String> requiredServices;
 
 	private Customer customer;
 
 	@JsonInclude(Include.NON_NULL)
 	private String comments;
 
-	@JsonIgnore
 	private TokenStatus tokenStatus;
-	
-	@JsonIgnore
+
 	private int nextStep;
 
 	public int getTokenId() {
@@ -61,14 +54,6 @@ public class TokenDTO implements Serializable {
 
 	public void setTokenType(String tokenType) {
 		this.tokenType = tokenType;
-	}
-
-	public String getRequiredServices() {
-		return requiredServices;
-	}
-
-	public void setRequiredServices(String requiredServices) {
-		this.requiredServices = requiredServices;
 	}
 
 	public Customer getCustomer() {
@@ -103,6 +88,14 @@ public class TokenDTO implements Serializable {
 		this.nextStep = nextStep;
 	}
 
+	public List<String> getRequiredServices() {
+		return requiredServices;
+	}
+
+	public void setRequiredServices(List<String> requiredServices) {
+		this.requiredServices = requiredServices;
+	}
+
 	@Override
 	public String toString() {
 		return "TokenDTO [tokenId=" + tokenId + ", tokenType=" + tokenType + ", requiredServices=" + requiredServices
@@ -111,7 +104,7 @@ public class TokenDTO implements Serializable {
 	}
 
 	public boolean isFurtherProcessingRequired() {
-		if (requiredServices.length() > nextStep)
+		if (requiredServices.size() > nextStep)
 			return true;
 		else
 			return false;

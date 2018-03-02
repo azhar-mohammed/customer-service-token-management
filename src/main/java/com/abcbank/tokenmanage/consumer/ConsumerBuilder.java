@@ -1,5 +1,7 @@
 package com.abcbank.tokenmanage.consumer;
 
+import java.util.List;
+
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,20 +25,18 @@ public class ConsumerBuilder {
 
 		String counterName = counterDTO.getCounterName();
 
-		String counterOperation = counterDTO.getCounterService();
-
 		String counterType = counterDTO.getCounterType();
 
 		receivingCounter = factory.createCounterInstance(counterDTO, tokenService);
 
-		String[] operations = counterOperation.split(",");
-		for (String operation : operations) {
-			operation = operation.trim();
+		for (String operation : counterDTO.getCounterServices()) {
+
 			System.out.println(operation);
-			new Consumer(counterName, operation + "-" + counterType + "-key", operation + "-" + counterType + "-queue",
+			new Consumer(counterName, operation + "-" + counterType + "-key", operation.trim() + "-" + counterType + "-queue",
 					connectionFactory, receivingCounter);
 		}
 
 	}
 
+	
 }

@@ -1,6 +1,5 @@
 package com.abcbank.tokenmanage.service;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,6 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-
 
 import com.abcbank.tokenmanage.dto.TokenDTO;
 import com.abcbank.tokenmanage.exception.CustomerException;
@@ -83,13 +81,12 @@ public class TokenServiceImplementation implements TokenService {
 
 	private void validateRequiredServices(TokenDTO tokenDTO) {
 
-		if (tokenDTO.getRequiredServices() == null)
-			throw new TokenException("Token creation failed.Required services is null");
+		if (tokenDTO.getRequiredServices() == null || tokenDTO.getRequiredServices().isEmpty())
+			throw new TokenException("Token creation failed.Required services is null or empty");
 
-		String[] requiredServices = tokenDTO.getRequiredServices().split(",");
-		for (String service : requiredServices) {
+		for (String service : tokenDTO.getRequiredServices()) {
 			if (!EnumUtils.isValidEnum(ServiceType.class, service)) {
-				throw new TokenException("Token creation failed invalid service " +service + " provided");
+				throw new TokenException("Token creation failed invalid service " + service + " provided");
 			}
 		}
 	}
@@ -137,17 +134,16 @@ public class TokenServiceImplementation implements TokenService {
 	@Override
 	public void queueToken(TokenDTO tokenDTO) {
 
-		String[] requiredServices = tokenDTO.getRequiredServices().split(",");
-
 		int nextStep = tokenDTO.getNextStep();
 
-		if (requiredServices.length > nextStep) {
+		if (tokenDTO.getRequiredServices().size() > nextStep) {
 
 			tokenDTO.setNextStep(nextStep + 1);
 
 			if (EnumUtils.isValidEnum(CustomerType.class, tokenDTO.getTokenType()))
 				amqpTemplate.convertAndSend("tokens-exchange",
-						requiredServices[nextStep] + "-" + tokenDTO.getTokenType() + "-key", tokenDTO);
+						tokenDTO.getRequiredServices().get(nextStep) + "-" + tokenDTO.getTokenType() + "-key",
+						tokenDTO);
 
 		}
 
@@ -184,6 +180,8 @@ public class TokenServiceImplementation implements TokenService {
 
 	@Override
 	public void deleteTokenCounterMapping(Integer id) {
+		if (id == null)
+			throw new TokenCounterMappingException("Delete Token Counter Mapping failed id is null");
 
 		tokenCounterRepo.delete(id);
 	}

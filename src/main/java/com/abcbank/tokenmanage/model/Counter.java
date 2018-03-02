@@ -1,7 +1,10 @@
 package com.abcbank.tokenmanage.model;
 
 
+import java.util.List;
+
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,8 +24,8 @@ public class Counter {
 	private int counterId;
 	@Column
 	private String counterName;
-	@Column
-	private String counterService;
+	@ElementCollection
+	private List<String> counterServices;
 	@Column
 	private String counterType;
 
@@ -43,12 +46,12 @@ public class Counter {
 		this.counterName = counterName;
 	}
 
-	public String getCounterService() {
-		return counterService;
+	public List<String> getCounterServices() {
+		return counterServices;
 	}
 
-	public void setCounterService(String counterService) {
-		this.counterService = counterService;
+	public void setCounterServices(List<String> counterServices) {
+		this.counterServices = counterServices;
 	}
 
 	public String getCounterType() {

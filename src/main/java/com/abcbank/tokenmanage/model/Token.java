@@ -1,8 +1,10 @@
 package com.abcbank.tokenmanage.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -23,7 +25,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  *
  */
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = Token.class)
 public class Token implements Serializable {
 
 	/**
@@ -35,8 +36,8 @@ public class Token implements Serializable {
 	private int tokenId;
 	@Column
 	private String tokenType;
-	@Column
-	private String requiredServices;
+	@ElementCollection
+	private List<String> requiredServices;
 	@OneToOne
 	@JoinColumn(name = "customerId")
 	private Customer customer;
@@ -64,14 +65,14 @@ public class Token implements Serializable {
 		this.tokenType = tokenType;
 	}
    
-	public String getRequiredServices() {
+	public List<String> getRequiredServices() {
 		return requiredServices;
 	}
 
-	public void setRequiredServices(String requiredServices) {
+	public void setRequiredServices(List<String> requiredServices) {
 		this.requiredServices = requiredServices;
 	}
-	
+
 	public String getComments() {
 		return comments;
 	}

@@ -65,8 +65,7 @@ public class CounterServiceImplementation implements CounterService {
 
 	private void validateRequiredServices(CounterDTO counterDTO) {
 
-		String[] requiredServices = counterDTO.getCounterService().split(",");
-		for (String service : requiredServices) {
+		for (String service : counterDTO.getCounterServices()) {
 			if (!EnumUtils.isValidEnum(ServiceType.class, service)) {
 				throw new TokenException("Counter creation failed invalid service " + service + " provided");
 			}
@@ -76,10 +75,12 @@ public class CounterServiceImplementation implements CounterService {
 	private void fieldsAreNotNullValidation(CounterDTO counterDTO) {
 		if (counterDTO.getCounterName() == null) {
 			throw new CounterException("counter creation failed counter name is null");
-		} else if (counterDTO.getCounterService() == null) {
+		} else if (counterDTO.getCounterServices() == null) {
 			throw new CounterException("counter creation failed counter service is null");
 		} else if (counterDTO.getCounterType() == null) {
 			throw new CounterException("counter creation failed counter type is null");
+		} else if (counterDTO.getCounterServices().isEmpty()) {
+			throw new CounterException("Counter creation failed empty counter services list specified");
 		} else if (counterNameExistsCheck(counterDTO)) {
 			throw new CounterException(
 					"A counter is already present with the same name please provide a different name");
@@ -116,11 +117,24 @@ public class CounterServiceImplementation implements CounterService {
 
 			List<TokenCounterMapping> tokenCounterMapList = tokenCounterRepo
 					.findAllByCounterId(counterDTO.getCounterId());
-
-			counterDTO.setTokens(getListOfTokens(tokenCounterMapList));
+			if (tokenCounterMapList != null)
+				counterDTO.setTokens(getListOfTokens(tokenCounterMapList));
 		}
 		return counterDTOList;
 
+	}
+
+	public List<CounterDTO> mockupGetService() {
+		List<CounterDTO> counterDTOList = new ArrayList<CounterDTO>();
+		CounterDTO counter = new CounterDTO();
+		counter.setCounterId(1);
+		counter.setCounterName("DEPOSIT COUNTER");
+		List<String> service = new ArrayList<String>();
+		service.add("DEPOSIT");
+		service.add("WITHDRAW");
+		counter.setCounterServices(service);
+		counterDTOList.add(counter);
+		return counterDTOList;
 	}
 
 	private List<TokenDTO> getListOfTokens(List<TokenCounterMapping> tokenCounterMapList) {

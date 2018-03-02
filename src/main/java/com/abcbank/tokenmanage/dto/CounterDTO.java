@@ -16,14 +16,15 @@ public class CounterDTO {
 
 	@JsonIgnore
 	private int counterId;
-	
+
 	private String counterName;
 
-	private String counterService;
+	@JsonInclude(Include.NON_NULL)
+	private List<String> counterServices;
 
 	private String counterType;
 
-	@JsonInclude(Include.NON_NULL)
+	@JsonInclude(Include.NON_DEFAULT)
 	private List<TokenDTO> tokens;
 
 	public String getCounterName() {
@@ -32,14 +33,6 @@ public class CounterDTO {
 
 	public void setCounterName(String counterName) {
 		this.counterName = counterName;
-	}
-
-	public String getCounterService() {
-		return counterService;
-	}
-
-	public void setCounterService(String counterService) {
-		this.counterService = counterService;
 	}
 
 	public String getCounterType() {
@@ -64,6 +57,14 @@ public class CounterDTO {
 
 	public void setCounterId(int counterId) {
 		this.counterId = counterId;
+	}
+
+	public List<String> getCounterServices() {
+		return counterServices;
+	}
+
+	public void setCounterServices(List<String> counterServices) {
+		this.counterServices = counterServices;
 	}
 
 }

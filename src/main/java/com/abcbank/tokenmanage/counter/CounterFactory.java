@@ -1,5 +1,9 @@
 package com.abcbank.tokenmanage.counter;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.abcbank.tokenmanage.dto.CounterDTO;
 import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.service.TokenServiceImplementation;
@@ -16,8 +20,14 @@ public class CounterFactory {
 		Receiver receiver = null;
 
 		String counterName = counterDTO.getCounterName();
-
-		String counterOperation = counterDTO.getCounterService();
+		
+		List<String> operationList = new ArrayList<String>();
+		
+		operationList.addAll(counterDTO.getCounterServices());
+		
+		Collections.sort(operationList);
+		
+		String counterOperation =  String.join(",",operationList);
 
 		String counterType = counterDTO.getCounterType();
 
@@ -26,16 +36,15 @@ public class CounterFactory {
 		switch (counterOperation) {
 
 		case "DEPOSIT":
-			receiver = new DepositCounter(counterId,counterName, counterType, tokenService );
+			receiver = new DepositCounter(counterId, counterName, counterType, tokenService);
 			break;
 
 		case "WITHDRAW":
-			receiver = new WithdrawlCounter(counterId,counterName, counterType, tokenService);
+			receiver = new WithdrawlCounter(counterId, counterName, counterType, tokenService);
 			break;
 
 		case "DEPOSIT,WITHDRAW":
-		case "WITHDRAW,DEPOSIT":
-			receiver = new DepositAndWithdrawCounter(counterId,counterName, counterType, tokenService);
+			receiver = new DepositAndWithdrawCounter(counterId, counterName, counterType, tokenService);
 			break;
 		}
 		return receiver;

@@ -22,10 +22,11 @@ public class DepositAndWithdrawCounter extends Counter implements Receiver {
 	TokenService tokenService;
 
 	public DepositAndWithdrawCounter(int counterId, String counterName, String counterType, TokenService tokenService) {
+		this.counterId = counterId;
 		this.counterName = counterName;
 		this.counterType = counterType;
 		this.tokenService = tokenService;
-		this.counterId = counterId;
+		
 	}
 
 	public void performDeposit() {
@@ -61,14 +62,13 @@ public class DepositAndWithdrawCounter extends Counter implements Receiver {
 
 		TimeUnit.MINUTES.sleep(1);
 
-		String[] requiredServices = tokenDTO.getRequiredServices().split(",");
-
-		if (requiredServices[tokenDTO.getNextStep() - 1].equals(ServiceType.DEPOSIT.toString())) {
+		if (tokenDTO.getRequiredServices().get(tokenDTO.getNextStep() - 1).equals(ServiceType.DEPOSIT.toString())) {
 			performDeposit();
 			tokenDTO.setComments(tokenDTO.getComments() + " Performed Deposit operation.");
 			tokenService.updateToken(tokenDTO);
 
-		} else if (requiredServices[tokenDTO.getNextStep() - 1].equals(ServiceType.WITHDRAW.toString())) {
+		} else if (tokenDTO.getRequiredServices().get(tokenDTO.getNextStep() - 1)
+				.equals(ServiceType.WITHDRAW.toString())) {
 			performWithdrawl();
 			tokenDTO.setComments(tokenDTO.getComments() + " Performed Withdrawl operation.");
 			tokenService.updateToken(tokenDTO);

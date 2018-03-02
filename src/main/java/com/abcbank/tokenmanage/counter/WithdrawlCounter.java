@@ -56,7 +56,7 @@ public class WithdrawlCounter implements Receiver {
 
 	private void updateTokenComments(TokenDTO tokenDTO) {
 
-		tokenDTO.setComments(tokenDTO.getComments() + " Performed Deposit operation.");
+		tokenDTO.setComments(tokenDTO.getComments() + " Performed Withdraw operation.");
 		tokenService.updateToken(tokenDTO);
 
 	}
