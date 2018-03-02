@@ -3,10 +3,7 @@ package com.abcbank.tokenmanage.counter;
 import java.util.concurrent.TimeUnit;
 
 import com.abcbank.tokenmanage.dto.TokenDTO;
-import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.model.ServiceType;
-import com.abcbank.tokenmanage.model.TokenCounterMapping;
-import com.abcbank.tokenmanage.model.TokenStatus;
 import com.abcbank.tokenmanage.service.TokenService;
 
 /**
@@ -14,28 +11,13 @@ import com.abcbank.tokenmanage.service.TokenService;
  * @author azharm
  *
  */
-public class DepositAndWithdrawCounter extends Counter implements Receiver {
-
-	int counterId;
-	String counterName;
-	String counterType;
-	TokenService tokenService;
+public class DepositAndWithdrawCounter extends AbstractCounter implements Receiver {
 
 	public DepositAndWithdrawCounter(int counterId, String counterName, String counterType, TokenService tokenService) {
 		this.counterId = counterId;
 		this.counterName = counterName;
 		this.counterType = counterType;
 		this.tokenService = tokenService;
-		
-	}
-
-	public void performDeposit() {
-
-	}
-
-	public void performWithdrawl()
-
-	{
 
 	}
 
@@ -50,11 +32,7 @@ public class DepositAndWithdrawCounter extends Counter implements Receiver {
 
 		serveToken(tokenDTO);
 
-		if (tokenDTO.isFurtherProcessingRequired()) {
-			tokenService.queueToken(tokenDTO);
-		} else {
-			updateTokenStatusAsCompleted(tokenDTO);
-		}
+		updateTokenStatusAsCompleted(tokenDTO);
 
 	}
 
@@ -76,27 +54,13 @@ public class DepositAndWithdrawCounter extends Counter implements Receiver {
 
 	}
 
-	private void updateTokenStatusAsInProgress(TokenDTO tokenDTO) {
-
-		tokenDTO.setTokenStatus(TokenStatus.INPROGRESS);
-		tokenService.updateToken(tokenDTO);
+	public void performDeposit() {
 
 	}
 
-	private void updateTokenStatusAsCompleted(TokenDTO tokenDTO) {
+	public void performWithdrawl()
 
-		tokenDTO.setTokenStatus(TokenStatus.COMPLETED);
-		tokenService.updateToken(tokenDTO);
-
-	}
-
-	private TokenCounterMapping mapTokenToCounter(TokenDTO tokenDTO) {
-
-		TokenCounterMapping tokenCounter = new TokenCounterMapping();
-		tokenCounter.setCounterId(counterId);
-		tokenCounter.setTokenId(tokenDTO.getTokenId());
-
-		return tokenService.saveTokenCounterMapping(tokenCounter);
+	{
 
 	}
 

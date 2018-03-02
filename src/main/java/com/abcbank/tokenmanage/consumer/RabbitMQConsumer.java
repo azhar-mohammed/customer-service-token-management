@@ -12,7 +12,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 
 import com.abcbank.tokenmanage.counter.Receiver;
 
-public class Consumer {
+public class RabbitMQConsumer {
 
     private final ConnectionFactory connectionFactory;
 
@@ -29,7 +29,7 @@ public class Consumer {
 
     private String name;
     
-     public Consumer(String consumerName, String routingKey, String queueName, ConnectionFactory connectionFactory,Receiver receiver) {
+     public RabbitMQConsumer(String consumerName, String routingKey, String queueName, ConnectionFactory connectionFactory,Receiver receiver) {
         this.name = consumerName;
         this.routingKey = routingKey;
         this.queueName = queueName;

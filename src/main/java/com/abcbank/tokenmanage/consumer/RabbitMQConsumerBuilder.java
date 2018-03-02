@@ -1,7 +1,5 @@
 package com.abcbank.tokenmanage.consumer;
 
-import java.util.List;
-
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,10 +10,15 @@ import com.abcbank.tokenmanage.dto.CounterDTO;
 import com.abcbank.tokenmanage.service.TokenServiceImplementation;
 
 @Component
-public class ConsumerBuilder {
+public class RabbitMQConsumerBuilder {
 
 	@Autowired
 	ConnectionFactory connectionFactory;
+	/**
+	 * This  creates a rabbitmq consumer and binds it to a specific queue based on operation. 
+	 * @param counterDTO
+	 * @param tokenService
+	 */
 
 	public void build(CounterDTO counterDTO, TokenServiceImplementation tokenService) {
 
@@ -32,11 +35,11 @@ public class ConsumerBuilder {
 		for (String operation : counterDTO.getCounterServices()) {
 
 			System.out.println(operation);
-			new Consumer(counterName, operation + "-" + counterType + "-key", operation.trim() + "-" + counterType + "-queue",
-					connectionFactory, receivingCounter);
+			// Queue creation and binding of the rabbitmq consumer to the specific queue
+			new RabbitMQConsumer(counterName, operation + "-" + counterType + "-key",
+					operation.trim() + "-" + counterType + "-queue", connectionFactory, receivingCounter);
 		}
 
 	}
 
-	
 }

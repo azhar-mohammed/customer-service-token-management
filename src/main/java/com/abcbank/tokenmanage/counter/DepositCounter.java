@@ -11,12 +11,7 @@ import com.abcbank.tokenmanage.service.TokenService;
  * @author azharm
  *
  */
-public class DepositCounter implements Receiver {
-
-	int counterId;
-	String counterName;
-	String counterType;
-	TokenService tokenService;
+public class DepositCounter extends AbstractCounter implements Receiver {
 
 	public DepositCounter(int counterId, String counterName, String counterType, TokenService tokenService) {
 		this.counterId = counterId;
@@ -37,51 +32,15 @@ public class DepositCounter implements Receiver {
 
 		serveToken();
 
-		updateTokenComments(tokenDTO);
+		updateTokenComments(tokenDTO, "Performed Deposit operation.");
 
-		if (tokenDTO.isFurtherProcessingRequired()) {
-			tokenService.queueToken(tokenDTO);
-		}
-		else {
-			updateTokenStatusAsCompleted(tokenDTO);
-		}
+		updateTokenStatusAsCompleted(tokenDTO);
 
 	}
 
 	private void serveToken() throws InterruptedException {
 
 		TimeUnit.MILLISECONDS.sleep(6000);
-
-	}
-
-	private void updateTokenComments(TokenDTO tokenDTO) {
-
-		tokenDTO.setComments(tokenDTO.getComments() + " Performed Deposit operation.");
-		tokenService.updateToken(tokenDTO);
-
-	}
-
-	private void updateTokenStatusAsInProgress(TokenDTO tokenDTO) {
-
-		tokenDTO.setTokenStatus(TokenStatus.INPROGRESS);
-		tokenService.updateToken(tokenDTO);
-
-	}
-
-	private void updateTokenStatusAsCompleted(TokenDTO tokenDTO) {
-
-		tokenDTO.setTokenStatus(TokenStatus.COMPLETED);
-		tokenService.updateToken(tokenDTO);
-
-	}
-
-	private TokenCounterMapping mapTokenToCounter(TokenDTO tokenDTO) {
-
-		TokenCounterMapping tokenCounter = new TokenCounterMapping();
-		tokenCounter.setCounterId(counterId);
-		tokenCounter.setTokenId(tokenDTO.getTokenId());
-
-		return tokenService.saveTokenCounterMapping(tokenCounter);
 
 	}
 

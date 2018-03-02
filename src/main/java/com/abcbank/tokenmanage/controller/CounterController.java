@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.abcbank.tokenmanage.consumer.Consumer;
-import com.abcbank.tokenmanage.consumer.ConsumerBuilder;
+import com.abcbank.tokenmanage.consumer.RabbitMQConsumer;
+import com.abcbank.tokenmanage.consumer.RabbitMQConsumerBuilder;
 import com.abcbank.tokenmanage.dto.CounterDTO;
 import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.model.Token;
@@ -40,14 +40,24 @@ public class CounterController {
 	TokenServiceImplementation tokenService;
 
 	@Autowired
-	private ConsumerBuilder consumerBuilder;
+	private RabbitMQConsumerBuilder consumerBuilder;
 
+	/**
+	 * Returns a list of counters and corresponding to it the tokens which have been processed and are currently being processed 
+	 * @return
+	 */
 
 	@GetMapping("/api/counter")
 	public ResponseEntity<List<CounterDTO>> getCounters() {
 		
 		return new ResponseEntity<List<CounterDTO>>(counterService.getAllCounters(),HttpStatus.OK);
 	}
+	
+	/**
+	 * Creates a counter which is a rabbitMq consumer based on the services and the type of counter provided.
+	 * @param counterDTO
+	 * @return
+	 */
 
 	@PostMapping("api/counter")
 	public ResponseEntity<CounterDTO> registerCounter(@RequestBody CounterDTO counterDTO) {

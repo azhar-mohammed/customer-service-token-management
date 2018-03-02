@@ -14,40 +14,49 @@ import com.abcbank.tokenmanage.service.TokenServiceImplementation;
  *
  */
 public class CounterFactory {
+	/**
+	 * Creates a counter based on the services required . 
+	 * @param counterDTO
+	 * @param tokenService
+	 * @return
+	 */
 
 	public Receiver createCounterInstance(CounterDTO counterDTO, TokenServiceImplementation tokenService) {
 
-		Receiver receiver = null;
+		Receiver receivingCounter = null;
 
 		String counterName = counterDTO.getCounterName();
-		
+
+		// Sorting the list of operations in a lexicographic manner 
 		List<String> operationList = new ArrayList<String>();
-		
+
 		operationList.addAll(counterDTO.getCounterServices());
-		
+
 		Collections.sort(operationList);
-		
-		String counterOperation =  String.join(",",operationList);
+
+		String counterOperation = String.join(",", operationList);
 
 		String counterType = counterDTO.getCounterType();
 
 		int counterId = counterDTO.getCounterId();
+		
+		//The service types or operations specified in switch case are to be specified in lexicographic manner
 
 		switch (counterOperation) {
 
 		case "DEPOSIT":
-			receiver = new DepositCounter(counterId, counterName, counterType, tokenService);
+			receivingCounter = new DepositCounter(counterId, counterName, counterType, tokenService);
 			break;
 
 		case "WITHDRAW":
-			receiver = new WithdrawlCounter(counterId, counterName, counterType, tokenService);
+			receivingCounter = new WithdrawlCounter(counterId, counterName, counterType, tokenService);
 			break;
 
 		case "DEPOSIT,WITHDRAW":
-			receiver = new DepositAndWithdrawCounter(counterId, counterName, counterType, tokenService);
+			receivingCounter = new DepositAndWithdrawCounter(counterId, counterName, counterType, tokenService);
 			break;
 		}
-		return receiver;
+		return receivingCounter;
 
 	}
 
