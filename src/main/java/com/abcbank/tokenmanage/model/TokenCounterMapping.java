@@ -25,7 +25,7 @@ public class TokenCounterMapping implements Serializable {
 	 */
 	private static final long serialVersionUID = 6070188352173195078L;
 	@Id
-//	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int id;
 	@Column
 	private int tokenId;

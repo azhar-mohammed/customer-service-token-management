@@ -55,8 +55,6 @@ public class CounterController {
 
 		CounterDTO savedCounterDTO = counterService.saveCounter(counterDTO); 
 		
-		System.out.println("counterDTO is "+savedCounterDTO);
-		
 		consumerBuilder.build(savedCounterDTO,tokenService);
 				
 		return new ResponseEntity<CounterDTO>(savedCounterDTO,HttpStatus.OK);
