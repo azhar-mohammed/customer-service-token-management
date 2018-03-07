@@ -9,9 +9,9 @@
 <h2> End Points </h2>
 
 ```
-1. Creating a bank :-Below mentioned API end point creates a bank </br>
-POST: http://localhost:8080/api/bank </br>
-sample request and response </br>
+1. Creating a bank :-Below mentioned API end point creates a bank 
+POST: http://localhost:8080/api/bank 
+sample request and response 
 
 {
 			
@@ -28,8 +28,8 @@ sample request and response </br>
 
 2.Creating a branch: 
 
-POST:http://localhost:8080/api/branch </br>
-sample request and response </br>
+POST:http://localhost:8080/api/branch 
+sample request and response 
 
 
 {
@@ -47,8 +47,8 @@ sample request and response </br>
 
 
 3. Creating a counter
-POST:http://localhost:8080/api/counter </br>
-sample request and response </br>
+POST:http://localhost:8080/api/counter 
+sample request and response 
 
  {
 			
@@ -70,8 +70,8 @@ sample request and response </br>
 }   
 
 4.Creating a Token
-POST: http://localhost:8080/api/token </br>
-sample request </br>
+POST: http://localhost:8080/api/token 
+sample request 
 
   {  
    "tokenType":"PREMIUM",
