@@ -1,6 +1,10 @@
 package com.abcbank.tokenmanage.exception;
-
-public class ExceptionJSONWrapper {
+/**
+ * 
+ * @author azharm
+ *
+ */
+public class ExceptionWrapper {
 	private int statusCode;
 	private String exceptionMessage;
 	private String url;

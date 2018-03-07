@@ -10,9 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
@@ -32,6 +30,10 @@ public class Customer implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int customerId;
+	
+	@Column
+	@JsonInclude(Include.NON_DEFAULT)
+	private int branchId;
 
 	@Column
 	@JsonInclude(Include.NON_NULL)
@@ -48,14 +50,6 @@ public class Customer implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column
 	private CustomerType customerType;
-
-	public String getCustomerName() {
-		return name;
-	}
-
-	public void setCustomerName(String customerName) {
-		this.name = customerName;
-	}
 
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -88,11 +82,28 @@ public class Customer implements Serializable {
 	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
 	}
+	
+	public int getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(int branchId) {
+		this.branchId = branchId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	@Override
 	public String toString() {
-		return "Customer [customerId=" + customerId + ", name=" + name + ", phoneNumber=" + phoneNumber + ", address="
-				+ address + ", customerType=" + customerType + "]";
+		return "Customer [customerId=" + customerId + ", branchId=" + branchId + ", name=" + name + ", phoneNumber="
+				+ phoneNumber + ", address=" + address + ", customerType=" + customerType + "]";
 	}
+
 
 }

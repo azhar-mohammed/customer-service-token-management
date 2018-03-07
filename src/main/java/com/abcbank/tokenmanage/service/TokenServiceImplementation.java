@@ -17,16 +17,23 @@ import com.abcbank.tokenmanage.dto.TokenDTO;
 import com.abcbank.tokenmanage.exception.CustomerException;
 import com.abcbank.tokenmanage.exception.TokenCounterMappingException;
 import com.abcbank.tokenmanage.exception.TokenException;
+import com.abcbank.tokenmanage.model.Branch;
 import com.abcbank.tokenmanage.model.Customer;
 import com.abcbank.tokenmanage.model.CustomerType;
 import com.abcbank.tokenmanage.model.ServiceType;
 import com.abcbank.tokenmanage.model.Token;
 import com.abcbank.tokenmanage.model.TokenCounterMapping;
 import com.abcbank.tokenmanage.model.TokenStatus;
+import com.abcbank.tokenmanage.repository.BranchRepository;
 import com.abcbank.tokenmanage.repository.CustomerRepository;
 import com.abcbank.tokenmanage.repository.TokenCounterRepository;
 import com.abcbank.tokenmanage.repository.TokenRepository;
 
+/**
+ * 
+ * @author azharm
+ *
+ */
 @Service
 public class TokenServiceImplementation implements TokenService {
 
@@ -38,6 +45,9 @@ public class TokenServiceImplementation implements TokenService {
 
 	@Autowired
 	TokenCounterRepository tokenCounterRepo;
+
+	@Autowired
+	BranchRepository branchRepo;
 
 	@Autowired
 	private AmqpTemplate amqpTemplate;
@@ -84,6 +94,9 @@ public class TokenServiceImplementation implements TokenService {
 		if (tokenDTO.getRequiredServices() == null || tokenDTO.getRequiredServices().isEmpty())
 			throw new TokenException("Token creation failed.Required services is null or empty");
 
+		if (tokenDTO.getTokenType() == null)
+			throw new TokenException("Token creation failed specified token type is null");
+
 		for (String service : tokenDTO.getRequiredServices()) {
 			if (!EnumUtils.isValidEnum(ServiceType.class, service)) {
 				throw new TokenException("Token creation failed invalid service " + service + " provided");
@@ -104,6 +117,11 @@ public class TokenServiceImplementation implements TokenService {
 
 	private void saveCustomer(TokenDTO tokenDTO) {
 
+		if (tokenDTO.getCustomer() == null)
+			throw new TokenException("Token creation failed customer information is not specified");
+
+		validateBranch(tokenDTO.getCustomer().getBranchId());
+
 		if (tokenDTO.getCustomer().getCustomerId() == 0) {
 			validateCustomer(tokenDTO.getCustomer());
 			Customer customer = customerRepo.save(tokenDTO.getCustomer());
@@ -113,9 +131,22 @@ public class TokenServiceImplementation implements TokenService {
 		}
 	}
 
+	private void validateBranch(int branchId) {
+
+		if (branchId == 0)
+			throw new CustomerException("Token creation failed branch id specified is not specified");
+
+		Branch branch = branchRepo.findOne(branchId);
+
+		if (branch == null) {
+			throw new CustomerException("token creation failed invalid branch id specified");
+		}
+
+	}
+
 	private void validateCustomer(Customer customer) {
 
-		if (customer.getCustomerName() == null) {
+		if (customer.getName() == null) {
 			throw new CustomerException("token creation failed name of customer is null");
 		} else if (customer.getCustomerType() == null) {
 			throw new CustomerException("Token creation failed customer type is null ");
@@ -142,7 +173,7 @@ public class TokenServiceImplementation implements TokenService {
 
 			if (EnumUtils.isValidEnum(CustomerType.class, tokenDTO.getTokenType()))
 				amqpTemplate.convertAndSend("tokens-exchange",
-						tokenDTO.getRequiredServices().get(nextStep) + "-" + tokenDTO.getTokenType() + "-key",
+						tokenDTO.getRequiredServices().get(nextStep) + "-" + tokenDTO.getTokenType() + "-key"+"-"+tokenDTO.getCustomer().getBranchId(),
 						tokenDTO);
 
 		}

@@ -3,7 +3,6 @@ package com.abcbank.tokenmanage.service;
 import java.util.List;
 
 import com.abcbank.tokenmanage.dto.TokenDTO;
-import com.abcbank.tokenmanage.model.Token;
 import com.abcbank.tokenmanage.model.TokenCounterMapping;
 
 public interface TokenService {

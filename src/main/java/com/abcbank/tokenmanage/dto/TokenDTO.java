@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.abcbank.tokenmanage.model.Customer;
 import com.abcbank.tokenmanage.model.TokenStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -27,8 +26,8 @@ public class TokenDTO implements Serializable {
 	private int tokenId;
 
 	private String tokenType;
-
-	@JsonInclude(Include.NON_DEFAULT)
+	
+    @JsonInclude(Include.NON_DEFAULT)
 	private List<String> requiredServices;
 
 	private Customer customer;

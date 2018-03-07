@@ -2,8 +2,6 @@ package com.abcbank.tokenmanage.counter;
 
 import java.util.concurrent.TimeUnit;
 import com.abcbank.tokenmanage.dto.TokenDTO;
-import com.abcbank.tokenmanage.model.TokenCounterMapping;
-import com.abcbank.tokenmanage.model.TokenStatus;
 import com.abcbank.tokenmanage.service.TokenService;
 
 /**

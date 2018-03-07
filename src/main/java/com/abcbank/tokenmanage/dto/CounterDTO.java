@@ -26,6 +26,17 @@ public class CounterDTO {
 
 	@JsonInclude(Include.NON_DEFAULT)
 	private List<TokenDTO> tokens;
+	
+	@JsonInclude(Include.NON_DEFAULT)
+	private int branchId;
+
+	public int getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(int branchId) {
+		this.branchId = branchId;
+	}
 
 	public String getCounterName() {
 		return counterName;
@@ -66,5 +77,17 @@ public class CounterDTO {
 	public void setCounterServices(List<String> counterServices) {
 		this.counterServices = counterServices;
 	}
+	
+
+	@Override
+	public String toString() {
+		return "CounterDTO [counterId=" + counterId + ", counterName=" + counterName + ", counterServices="
+				+ counterServices + ", counterType=" + counterType + ", tokens=" + tokens + ", branchId=" + branchId + "]";
+	}
+
+	
+	
+	
+	
 
 }

@@ -15,14 +15,21 @@ import com.abcbank.tokenmanage.dto.CounterDTO;
 import com.abcbank.tokenmanage.dto.TokenDTO;
 import com.abcbank.tokenmanage.exception.CounterException;
 import com.abcbank.tokenmanage.exception.TokenException;
+import com.abcbank.tokenmanage.model.Branch;
 import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.model.CustomerType;
 import com.abcbank.tokenmanage.model.ServiceType;
 import com.abcbank.tokenmanage.model.TokenCounterMapping;
+import com.abcbank.tokenmanage.repository.BranchRepository;
 import com.abcbank.tokenmanage.repository.CounterRepository;
 import com.abcbank.tokenmanage.repository.TokenCounterRepository;
 import com.abcbank.tokenmanage.repository.TokenRepository;
 
+/**
+ * 
+ * @author azharm
+ *
+ */
 @Service
 public class CounterServiceImplementation implements CounterService {
 
@@ -37,6 +44,9 @@ public class CounterServiceImplementation implements CounterService {
 
 	@Autowired
 	ModelMapper modelMapper;
+
+	@Autowired
+	BranchRepository branchRepo;
 
 	private Counter convertToEntity(CounterDTO counterDTO) {
 		return modelMapper.map(counterDTO, Counter.class);
@@ -60,6 +70,18 @@ public class CounterServiceImplementation implements CounterService {
 		fieldsAreNotNullValidation(counterDTO);
 		validateRequiredServices(counterDTO);
 		validateCounterType(counterDTO);
+		validateCounterBranchId(counterDTO);
+
+	}
+
+	private void validateCounterBranchId(CounterDTO counterDTO) {
+
+		Branch branch = branchRepo.findOne(counterDTO.getBranchId());
+
+		if (branch == null) {
+			throw new CounterException("Counter Creation failed the provided branch id does not exists");
+		}
+
 
 	}
 
@@ -84,6 +106,8 @@ public class CounterServiceImplementation implements CounterService {
 		} else if (counterNameExistsCheck(counterDTO)) {
 			throw new CounterException(
 					"A counter is already present with the same name please provide a different name");
+		} else if (counterDTO.getBranchId() == 0) {
+			throw new CounterException("Counter creation failed empty branch id provided");
 		}
 	}
 

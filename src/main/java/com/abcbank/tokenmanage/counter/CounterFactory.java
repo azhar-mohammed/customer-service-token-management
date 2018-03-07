@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.abcbank.tokenmanage.dto.CounterDTO;
-import com.abcbank.tokenmanage.model.Counter;
 import com.abcbank.tokenmanage.service.TokenServiceImplementation;
 
 /**

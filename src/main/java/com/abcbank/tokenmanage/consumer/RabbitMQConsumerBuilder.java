@@ -36,8 +36,8 @@ public class RabbitMQConsumerBuilder {
 
 			System.out.println(operation);
 			// Queue creation and binding of the rabbitmq consumer to the specific queue
-			new RabbitMQConsumer(counterName, operation + "-" + counterType + "-key",
-					operation.trim() + "-" + counterType + "-queue", connectionFactory, receivingCounter);
+			new RabbitMQConsumer(counterName, operation + "-" + counterType + "-key"+"-"+counterDTO.getBranchId(),
+					operation.trim() + "-" + counterType + "-queue"+"-"+counterDTO.getBranchId(), connectionFactory, receivingCounter);
 		}
 
 	}

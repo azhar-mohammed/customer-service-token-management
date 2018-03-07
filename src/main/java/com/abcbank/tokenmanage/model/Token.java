@@ -12,8 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -38,8 +41,9 @@ public class Token implements Serializable {
 	private String tokenType;
 	@ElementCollection
 	private List<String> requiredServices;
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "customerId")
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Customer customer;
 	@Column
 	private String comments;
