@@ -9,7 +9,8 @@
 <h2> End Points </h2>
 
 ```
-1. Creating a bank :-Below mentioned API end point creates a bank 
+1. Creating a bank :
+
 POST: http://localhost:8080/api/bank 
 sample request and response 
 
