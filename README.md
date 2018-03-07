@@ -24,10 +24,12 @@ sample request and response </br>
     "location": "Bombay"
 }
 ```
+
 2.Creating a branch: 
 POST:http://localhost:8080/api/branch </br>
 sample request and response </br>
- ```
+
+```
 {
 	"branchName":"lenadenaGachibowliBranch",
 	"location":"Gachibowli",
@@ -41,10 +43,12 @@ sample request and response </br>
    "bankId":1
 }
 ```
+
 3. Creating a counter
 POST:http://localhost:8080/api/counter </br>
 sample request and response </br>
- ```
+
+```
  {
 			
         "counterName": "PREMIUM-deposit-counter",
@@ -68,6 +72,7 @@ sample request and response </br>
 4.Creating a Token
 POST: http://localhost:8080/api/token </br>
 sample request </br>
+
 ``
   {  
    "tokenType":"PREMIUM",
