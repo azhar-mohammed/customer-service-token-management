@@ -92,6 +92,9 @@ sample request
 
 ```
 
+# Class Diagram 
+![Class Diagram](https://github.com/azhar-mohammed/customer-service-token-management/blob/master/model.jpg)
+
 # DB Schema 
 ![Schema Design](https://github.com/azhar-mohammed/customer-service-token-management/blob/master/db-design.png)
 
