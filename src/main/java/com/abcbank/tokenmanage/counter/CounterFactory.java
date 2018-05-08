@@ -14,7 +14,8 @@ import com.abcbank.tokenmanage.service.TokenServiceImplementation;
  */
 public class CounterFactory {
 	/**
-	 * Creates a counter based on the services required . 
+	 * Creates a counter based on the services required .
+	 * 
 	 * @param counterDTO
 	 * @param tokenService
 	 * @return
@@ -26,7 +27,7 @@ public class CounterFactory {
 
 		String counterName = counterDTO.getCounterName();
 
-		// Sorting the list of operations in a lexicographic manner 
+		// Sorting the list of operations in a lexicographic manner
 		List<String> operationList = new ArrayList<String>();
 
 		operationList.addAll(counterDTO.getCounterServices());
@@ -38,8 +39,9 @@ public class CounterFactory {
 		String counterType = counterDTO.getCounterType();
 
 		int counterId = counterDTO.getCounterId();
-		
-		//The service types or operations specified in switch case are to be specified in lexicographic manner
+
+		// The service types or operations specified in switch case are to be specified
+		// in lexicographic manner
 
 		switch (counterOperation) {
 

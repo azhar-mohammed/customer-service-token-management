@@ -22,7 +22,7 @@ public class DepositCounter extends AbstractCounter implements Receiver {
 	@Override
 	public void receiveToken(TokenDTO tokenDTO) throws Exception {
 
-		System.out.println("received message " + tokenDTO + " at counter" + counterName);
+		System.out.println("received message " + tokenDTO + " at counter " + counterName);
 
 		mapTokenToCounter(tokenDTO);
 

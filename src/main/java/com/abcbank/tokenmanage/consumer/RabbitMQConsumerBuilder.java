@@ -14,8 +14,11 @@ public class RabbitMQConsumerBuilder {
 
 	@Autowired
 	ConnectionFactory connectionFactory;
+
 	/**
-	 * This  creates a rabbitmq consumer and binds it to a specific queue based on operation. 
+	 * This creates a rabbitmq consumer and binds it to a specific queue based on
+	 * operation.
+	 * 
 	 * @param counterDTO
 	 * @param tokenService
 	 */
@@ -34,10 +37,10 @@ public class RabbitMQConsumerBuilder {
 
 		for (String operation : counterDTO.getCounterServices()) {
 
-			System.out.println(operation);
 			// Queue creation and binding of the rabbitmq consumer to the specific queue
-			new RabbitMQConsumer(counterName, operation + "-" + counterType + "-key"+"-"+counterDTO.getBranchId(),
-					operation.trim() + "-" + counterType + "-queue"+"-"+counterDTO.getBranchId(), connectionFactory, receivingCounter);
+			new RabbitMQConsumer(counterName, operation + "-" + counterType + "-key" + "-" + counterDTO.getBranchId(),
+					operation.trim() + "-" + counterType + "-queue" + "-" + counterDTO.getBranchId(), connectionFactory,
+					receivingCounter);
 		}
 
 	}
